@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Club del Gato — Panel de Ayuda</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f0eb;
+      color: #2d2d2d;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+    header h1 span.cat { font-size: 1.8rem; }
+    .fb-link {
+      background: #1877f2;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .fb-link:hover { background: #1565c0; }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: white;
+      border-bottom: 1px solid #e0d6cc;
+      padding: 14px 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-label { color: #666; font-size: 0.78rem; }
+    .stat.emergencia .stat-num { color: #d32f2f; }
+    .stat.adopcion .stat-num { color: #2e7d32; }
+    .stat.perdido .stat-num { color: #e65100; }
+    .stat.transporte .stat-num { color: #6a1b9a; }
+
+    .refresh-info {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: #999;
+    }
+
+    /* FILTROS */
+    .filters {
+      padding: 16px 24px 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      background: white;
+    }
+    .filter-btn.all     { border-color: #1a1a2e; color: #1a1a2e; }
+    .filter-btn.emerg   { border-color: #d32f2f; color: #d32f2f; }
+    .filter-btn.adopc   { border-color: #2e7d32; color: #2e7d32; }
+    .filter-btn.perd    { border-color: #e65100; color: #e65100; }
+    .filter-btn.transp  { border-color: #6a1b9a; color: #6a1b9a; }
+    .filter-btn.don     { border-color: #f57f17; color: #f57f17; }
+    .filter-btn.active  { color: white !important; }
+    .filter-btn.all.active    { background: #1a1a2e; }
+    .filter-btn.emerg.active  { background: #d32f2f; }
+    .filter-btn.adopc.active  { background: #2e7d32; }
+    .filter-btn.perd.active   { background: #e65100; }
+    .filter-btn.transp.active { background: #6a1b9a; }
+    .filter-btn.don.active    { background: #f57f17; }
+
+    /* BANNER EMERGENCIAS */
+    .emergency-banner {
+      margin: 16px 24px 0;
+      background: #ffebee;
+      border: 2px solid #d32f2f;
+      border-radius: 12px;
+      padding: 16px;
+      display: none;
+    }
+    .emergency-banner.visible { display: block; }
+    .emergency-banner h2 {
+      color: #b71c1c;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .emergency-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    /* GRID PRINCIPAL */
+    .main-grid {
+      padding: 16px 24px 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    /* CARDS */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border-left: 4px solid #ccc;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      transition: transform 0.12s, box-shadow 0.12s;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .card.EMERGENCIA  { border-left-color: #d32f2f; }
+    .card.ADOPCION    { border-left-color: #2e7d32; }
+    .card.PERDIDO     { border-left-color: #e65100; }
+    .card.TRANSPORTE  { border-left-color: #6a1b9a; }
+    .card.DONACION    { border-left-color: #f57f17; }
+    .card.ACTUALIZACION { border-left-color: #0288d1; }
+
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-EMERGENCIA   { background: #ffebee; color: #b71c1c; }
+    .badge-ADOPCION     { background: #e8f5e9; color: #1b5e20; }
+    .badge-PERDIDO      { background: #fff3e0; color: #bf360c; }
+    .badge-TRANSPORTE   { background: #f3e5f5; color: #4a148c; }
+    .badge-DONACION     { background: #fff8e1; color: #e65100; }
+    .badge-ACTUALIZACION { background: #e1f5fe; color: #01579b; }
+
+    .card-autor {
+      font-size: 0.78rem;
+      color: #888;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-texto {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #333;
+      margin-bottom: 12px;
+      /* truncar a 4 líneas */
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-foto-badge {
+      font-size: 0.72rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-fecha { font-size: 0.72rem; color: #aaa; }
+    .card-link {
+      font-size: 0.78rem;
+      color: #1877f2;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 4px 10px;
+      border: 1px solid #1877f2;
+      border-radius: 10px;
+    }
+    .card-link:hover { background: #1877f2; color: white; }
+
+    /* ESTADOS */
+    .loading, .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #e0d6cc;
+      border-top-color: #1a1a2e;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-box {
+      background: #fff3e0;
+      border: 1px solid #ffb74d;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 24px;
+      font-size: 0.85rem;
+      color: #e65100;
+    }
+
+    /* EMOJI por categoría */
+    .emoji-EMERGENCIA   { font-size: 1rem; }
+    .emoji-ADOPCION     { font-size: 1rem; }
+    .emoji-PERDIDO      { font-size: 1rem; }
+    .emoji-TRANSPORTE   { font-size: 1rem; }
+    .emoji-DONACION     { font-size: 1rem; }
+    .emoji-ACTUALIZACION { font-size: 1rem; }
+
+    @media (max-width: 600px) {
+      .stats-bar { gap: 14px; }
+      .main-grid { padding: 12px 12px 32px; }
+      .filters { padding: 12px 12px 0; }
+      .emergency-banner { margin: 12px 12px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><span class="cat">🐱</span> El Club del Gato — Panel de Ayuda</h1>
+  <a class="fb-link" href="https://www.facebook.com/groups/136844956329460" target="_blank" rel="noopener">
+    📘 Ver grupo en Facebook
+  </a>
+</header>
+
+<div class="stats-bar">
+  <div class="stat emergencia">
+    <div>
+      <div class="stat-num" id="cnt-emergencia">–</div>
+      <div class="stat-label">🚨 Emergencias</div>
+    </div>
+  </div>
+  <div class="stat adopcion">
+    <div>
+      <div class="stat-num" id="cnt-adopcion">–</div>
+      <div class="stat-label">🏠 En adopción</div>
+    </div>
+  </div>
+  <div class="stat perdido">
+    <div>
+      <div class="stat-num" id="cnt-perdido">–</div>
+      <div class="stat-label">🔍 Perdidos</div>
+    </div>
+  </div>
+  <div class="stat transporte">
+    <div>
+      <div class="stat-num" id="cnt-transporte">–</div>
+      <div class="stat-label">🚗 Transporte</div>
+    </div>
+  </div>
+  <div class="refresh-info" id="refresh-info">Cargando...</div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn all active" onclick="setFilter('ALL')">Todos</button>
+  <button class="filter-btn emerg"  onclick="setFilter('EMERGENCIA')">🚨 Emergencias</button>
+  <button class="filter-btn adopc"  onclick="setFilter('ADOPCION')">🏠 Adopción</button>
+  <button class="filter-btn perd"   onclick="setFilter('PERDIDO')">🔍 Perdidos</button>
+  <button class="filter-btn transp" onclick="setFilter('TRANSPORTE')">🚗 Transporte</button>
+  <button class="filter-btn don"    onclick="setFilter('DONACION')">💛 Donaciones</button>
+</div>
+
+<div class="emergency-banner" id="emergency-banner">
+  <h2>🚨 CASOS URGENTES ACTIVOS</h2>
+  <div class="emergency-cards" id="emergency-cards"></div>
+</div>
+
+<div id="error-box"></div>
+
+<div class="main-grid" id="main-grid">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <div>Cargando posts del grupo...</div>
+  </div>
+</div>
+
+<script>
+  const NOCODB_BASE = 'https://pacientes-noa.cookie-flow.net/api/v1/db/data/noco/ptwtqylx24wb14q/mdw4hsweaor7dtt';
+  const NOCODB_TOKEN = 'nc_pat_NHpGVpMhNUcp9KFYhQvIu-yPd-fQ0y1UCuE88o0Y';
+  const REFRESH_MS = 2 * 60 * 1000; // 2 minutos
+
+  const EMOJIS = {
+    EMERGENCIA: '🚨',
+    ADOPCION: '🏠',
+    PERDIDO: '🔍',
+    TRANSPORTE: '🚗',
+    DONACION: '💛',
+    ACTUALIZACION: '✅',
+    RUIDO: '💬'
+  };
+
+  let allPosts = [];
+  let currentFilter = 'ALL';
+
+  function setFilter(cat) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    const map = { ALL:'all', EMERGENCIA:'emerg', ADOPCION:'adopc', PERDIDO:'perd', TRANSPORTE:'transp', DONACION:'don' };
+    document.querySelector('.' + (map[cat] || 'all'))?.classList.add('active');
+    renderCards();
+  }
+
+  function renderStats(posts) {
+    ['EMERGENCIA','ADOPCION','PERDIDO','TRANSPORTE'].forEach(cat => {
+      const el = document.getElementById('cnt-' + cat.toLowerCase());
+      if (el) el.textContent = posts.filter(p => p.Categoria === cat).length;
+    });
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr.slice(0, 16).replace('T', ' ');
+    const diff = Math.floor((Date.now() - d) / 1000);
+    if (diff < 60) return 'hace un momento';
+    if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
+    if (diff < 86400) return `hace ${Math.floor(diff/3600)} hs`;
+    return `hace ${Math.floor(diff/86400)} días`;
+  }
+
+  function buildCard(post) {
+    const cat = post.Categoria || 'RUIDO';
+    const emoji = EMOJIS[cat] || '💬';
+    const texto = (post.Texto || '').trim();
+    const autor = post.Autor || 'Desconocido';
+    const url = post.Url || '#';
+    const fecha = timeAgo(post.FechaPost);
+    const foto = post.TieneFoto ? '📷 Incluye foto' : '';
+
+    return `
+      <div class="card ${cat}">
+        <div class="card-badge badge-${cat}">
+          <span>${emoji}</span> ${cat}
+        </div>
+        <div class="card-autor">👤 ${escHtml(autor)}</div>
+        ${foto ? `<div class="card-foto-badge">${foto}</div>` : ''}
+        <div class="card-texto">${escHtml(texto) || '<em style="color:#bbb">Sin texto</em>'}</div>
+        <div class="card-footer">
+          <span class="card-fecha">🕐 ${fecha}</span>
+          <a class="card-link" href="${escHtml(url)}" target="_blank" rel="noopener">Ver post →</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function escHtml(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderCards() {
+    const grid = document.getElementById('main-grid');
+    const banner = document.getElementById('emergency-banner');
+    const emergCards = document.getElementById('emergency-cards');
+
+    const emergencias = allPosts.filter(p => p.Categoria === 'EMERGENCIA');
+    if (emergencias.length > 0 && (currentFilter === 'ALL' || currentFilter === 'EMERGENCIA')) {
+      banner.classList.add('visible');
+      emergCards.innerHTML = emergencias.map(buildCard).join('');
+    } else {
+      banner.classList.remove('visible');
+    }
+
+    let posts = allPosts;
+    if (currentFilter !== 'ALL') {
+      posts = allPosts.filter(p => p.Categoria === currentFilter);
+    }
+    // Excluir emergencias del grid principal (ya están en el banner)
+    if (currentFilter === 'ALL') {
+      posts = posts.filter(p => p.Categoria !== 'EMERGENCIA');
+    }
+    // Excluir RUIDO siempre
+    posts = posts.filter(p => p.Categoria !== 'RUIDO');
+
+    if (posts.length === 0) {
+      grid.innerHTML = `<div class="empty-state">
+        <div style="font-size:2.5rem;margin-bottom:12px">😺</div>
+        <div>No hay posts en esta categoría por ahora.</div>
+        <div style="margin-top:8px;font-size:0.8rem;color:#bbb">El scraper corre cada 2 horas — volvé más tarde.</div>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = posts.map(buildCard).join('');
+  }
+
+  async function loadPosts() {
+    try {
+      const url = `${NOCODB_BASE}?where=(Estado,eq,ACTIVO)&sort=-FechaPost&limit=100`;
+      const resp = await fetch(url, {
+        headers: { 'xc-token': NOCODB_TOKEN }
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      allPosts = data.list || [];
+      renderStats(allPosts);
+      renderCards();
+      document.getElementById('error-box').innerHTML = '';
+      const now = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('refresh-info').textContent = `Actualizado ${now} · refresca cada 2 min`;
+    } catch(e) {
+      document.getElementById('error-box').innerHTML = `
+        <div class="error-box">
+          ⚠️ No se pudo cargar el panel: ${e.message}. Reintentando en 2 minutos.
+        </div>`;
+      document.getElementById('refresh-info').textContent = 'Error al cargar';
+      if (allPosts.length === 0) {
+        document.getElementById('main-grid').innerHTML = `<div class="empty-state">
+          <div style="font-size:2.5rem;margin-bottom:12px">😿</div>
+          <div>No se pudo conectar con la base de datos.</div>
+        </div>`;
+      }
+    }
+  }
+
+  // Iniciar
+  loadPosts();
+  setInterval(loadPosts, REFRESH_MS);
+</script>
+
+</body>
+</html>
