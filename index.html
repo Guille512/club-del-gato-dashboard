@@ -320,8 +320,7 @@
 </div>
 
 <script>
-  const NOCODB_BASE = 'https://pacientes-noa.cookie-flow.net/api/v1/db/data/noco/ptwtqylx24wb14q/mdw4hsweaor7dtt';
-  const NOCODB_TOKEN = 'nc_pat_NHpGVpMhNUcp9KFYhQvIu-yPd-fQ0y1UCuE88o0Y';
+  const API_URL = 'https://n8n.cookie-flow.net/webhook/club-del-gato-posts';
   const REFRESH_MS = 2 * 60 * 1000; // 2 minutos
 
   const EMOJIS = {
@@ -430,10 +429,7 @@
 
   async function loadPosts() {
     try {
-      const url = `${NOCODB_BASE}?where=(Estado,eq,ACTIVO)&sort=-FechaPost&limit=100`;
-      const resp = await fetch(url, {
-        headers: { 'xc-token': NOCODB_TOKEN }
-      });
+      const resp = await fetch(API_URL);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const data = await resp.json();
       allPosts = data.list || [];
