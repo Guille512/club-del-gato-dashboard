@@ -367,9 +367,9 @@
     const emoji = EMOJIS[cat] || '💬';
     const texto = (post.Texto || '').trim();
     const autor = post.Autor || 'Desconocido';
-    const url = post.Url || '#';
-    const fecha = timeAgo(post.FechaPost);
-    const foto = post.TieneFoto ? '📷 Incluye foto' : '';
+    const url = post.URL || '#';
+    const fecha = timeAgo(post.Fecha_Post);
+    const foto = post.Tiene_Foto ? '📷 Incluye foto' : '';
 
     return `
       <div class="card ${cat}">
