@@ -2270,6 +2270,87 @@
       box-shadow: 0 6px 18px rgba(0, 158, 227, 0.5);
     }
 
+    /* MODAL DE PUBLICACIÓN EN FACEBOOK */
+    .fb-groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .fb-group-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    body.dark-theme .fb-group-card {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .fb-group-card:hover {
+      border-color: #1877f2;
+      background: #f0f7ff;
+      transform: translateY(-2px);
+    }
+    body.dark-theme .fb-group-card:hover {
+      background: rgba(24, 119, 242, 0.15);
+    }
+    .fb-group-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .fb-group-members {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .fb-post-preview {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--dark);
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+    body.dark-theme .fb-post-preview {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    .btn-fb-share {
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(24, 119, 242, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-fb-share:hover {
+      background: #166fe5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(24, 119, 242, 0.5);
+    }
+
     /* CUSTOM PIN MARKERS */
     .custom-cat-pin {
       position: relative;
@@ -2714,6 +2795,25 @@
 
       <div id="donation-modal-content">
         <!-- Inyectado dinámicamente según el michi -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DIFUSIÓN Y PUBLICACIÓN EN FACEBOOK -->
+  <div class="modal-overlay" id="facebook-publish-modal" onclick="closeFacebookPublishModal(event)">
+    <div class="modal-card modal-card-lg" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: #1877f2; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+            <span>📘</span> Facebook
+          </span>
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0;">Difundir en Grupos y Páginas</h3>
+        </div>
+        <button class="close-btn" onclick="closeFacebookPublishModal()">&times;</button>
+      </div>
+
+      <div id="facebook-modal-content">
+        <!-- Renderizado dinámico con renderFacebookPublishModal() -->
       </div>
     </div>
   </div>
@@ -3894,6 +3994,10 @@
           💬 Contactar por WhatsApp (${cat.whatsapp})
         </button>
 
+        <button class="btn btn-facebook btn-full" onclick="openFacebookPublishModal('${cat.id}')" style="background: #1877f2; color: white; border: none;" title="Publicar este caso en grupos y páginas de Facebook">
+          📘 Publicar en Grupos de Facebook
+        </button>
+
         <button class="btn btn-instagram btn-full" onclick="exportCatStory('${cat.id}')" title="Generar imagen para historias de Instagram o WhatsApp">
           📸 Generar Historia de Instagram (PNG)
         </button>
@@ -4823,6 +4927,266 @@
       const msg = encodeURIComponent(`Hola! Te escribo por el caso de *${cat.nombre}* en ${cat.barrio} publicado en Red Michis Córdoba.`);
       window.open(`https://wa.me/${cat.whatsapp.replace(/\D/g,'')}?text=${msg}`, '_blank');
     }
+  }
+
+  // ==========================================
+  // DIFUSIÓN Y PUBLICACIÓN EN FACEBOOK & GRUPOS
+  // ==========================================
+  let activeFacebookCatId = null;
+
+  const FB_CORDOBA_GROUPS = [
+    {
+      name: "Gatos en Adopción Córdoba",
+      members: "58.400 miembros",
+      url: "https://www.facebook.com/groups/search/groups_home/?q=Gatos%20en%20Adopcion%20Cordoba"
+    },
+    {
+      name: "Mascotas Perdidas y Encontradas Córdoba",
+      members: "92.100 miembros",
+      url: "https://www.facebook.com/groups/search/groups_home/?q=Mascotas%20Perdidas%20Cordoba"
+    },
+    {
+      name: "Rescatistas y Proteccionistas Córdoba Capital",
+      members: "34.500 miembros",
+      url: "https://www.facebook.com/groups/search/groups_home/?q=Rescatistas%20Animales%20Cordoba"
+    },
+    {
+      name: "Red de Tránsitos Solidarios Córdoba",
+      members: "21.800 miembros",
+      url: "https://www.facebook.com/groups/search/groups_home/?q=Hogares%20de%20Transito%20Cordoba"
+    }
+  ];
+
+  function buildFacebookPostText(cat) {
+    const statusEmoji = {
+      EMERGENCIA: "🚨 ¡EMERGENCIA MÉDICA URGENTE EN CÓRDOBA!",
+      AVISTADO: "🔍 ¡GATITO AVISTADO EN CALLE / NECESITA AYUDA!",
+      EN_RESCATE: "🚑 ¡RESCATE EN CURSO EN CÓRDOBA!",
+      TRANSITO: "🏠 ¡BUSCA HOGAR DEFINITIVO CON REDES!",
+      ADOPCION: "💚 ¡EN ADOPCIÓN RESPONSABLE EN CÓRDOBA!"
+    }[cat.estado] || "🐾 ¡CASO DE RESCATE EN CÓRDOBA!";
+
+    let text = `${statusEmoji}\n\n`;
+    text += `🐱 Nombre: ${cat.nombre}\n`;
+    text += `📍 Ubicación: ${cat.barrio}\n`;
+    text += `🩺 Estado de Salud: ${cat.salud}\n\n`;
+    text += `📝 Descripción: ${cat.descripcion}\n\n`;
+
+    if (cat.deudaVet > 0) {
+      const falta = Math.max(0, cat.deudaVet - (cat.recaudado || 0));
+      text += `💉 Cuenta Veterinaria: Se necesitan $${falta.toLocaleString()} ARS para saldar la atención médica.\n\n`;
+    }
+
+    text += `💬 Contacto directo por WhatsApp: ${cat.whatsapp}\n`;
+    text += `🗺️ Ver ficha completa y ubicación en el mapa: https://guille512.github.io/club-del-gato-dashboard/mapa.html\n\n`;
+    text += `#RedMichisCba #GatosCordoba #RescateAnimal #AdopcionResponsable #Cordoba`;
+
+    return text;
+  }
+
+  function openFacebookPublishModal(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+
+    activeFacebookCatId = catId;
+    const modal = document.getElementById('facebook-publish-modal');
+    const content = document.getElementById('facebook-modal-content');
+
+    const postText = buildFacebookPostText(cat);
+
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px;">
+        <img src="${cat.foto}" alt="${cat.nombre}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=120&q=80'">
+        <div>
+          <div style="font-size: 0.95rem; font-weight: 800; color: var(--dark);">${cat.nombre}</div>
+          <div style="font-size: 0.76rem; color: var(--text-muted);">📍 ${cat.barrio} · ${cat.estado}</div>
+        </div>
+      </div>
+
+      <!-- PASO 1: GRUPOS DESTACADOS DE CÓRDOBA -->
+      <div style="margin-bottom: 14px;">
+        <label class="form-label" style="font-size: 0.76rem;">1. Elegí el grupo o página donde querés publicar:</label>
+        <div class="fb-groups-grid">
+          ${FB_CORDOBA_GROUPS.map(g => `
+            <div class="fb-group-card" onclick="openFacebookGroup('${g.url}', '${cat.id}')" title="Abrir ${g.name} en Facebook">
+              <div>
+                <div class="fb-group-name">${g.name}</div>
+                <div class="fb-group-members">👥 ${g.members}</div>
+              </div>
+              <span style="font-size: 1.1rem; color: #1877f2; font-weight: 900;">↗</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- PASO 2: TEXTO DEL POST FORMATADO -->
+      <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="form-label" style="margin-bottom: 0; font-size: 0.76rem;">2. Texto optimizado con emojis y datos del caso:</label>
+          <button type="button" class="btn btn-secondary" onclick="copyFacebookPostText('${cat.id}')" style="padding: 4px 10px; font-size: 0.72rem; gap: 4px;">
+            <span>📋</span> Copiar Texto
+          </button>
+        </div>
+        <textarea id="fb-post-textarea" class="fb-post-preview" readonly>${escapeHtml(postText)}</textarea>
+      </div>
+
+      <!-- PASO 3: ACCIONES DE DIFUSIÓN -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button type="button" class="btn-fb-share" onclick="shareDirectFacebook('${cat.id}')">
+          <span>📘</span> Compartir en Facebook
+        </button>
+        <button type="button" class="btn btn-primary" onclick="generateFacebookFlyer('${cat.id}')" style="padding: 12px 18px; font-size: 0.9rem;">
+          <span>📸</span> Descargar Flyer FB (HD)
+        </button>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeFacebookPublishModal(e) {
+    if (e && e.target && e.target.id !== 'facebook-publish-modal' && !e.target.classList.contains('close-btn')) {
+      return;
+    }
+    const modal = document.getElementById('facebook-publish-modal');
+    if (modal) modal.classList.remove('open');
+    activeFacebookCatId = null;
+  }
+
+  function copyFacebookPostText(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+    const text = buildFacebookPostText(cat);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        playSuccessChime();
+        showToast('📋 ¡Texto del post copiado! Listo para pegar en Facebook');
+      }).catch(() => fallbackCopyText(text));
+    } else {
+      fallbackCopyText(text);
+    }
+  }
+
+  function openFacebookGroup(url, catId) {
+    copyFacebookPostText(catId);
+    showToast('🚀 Abriendo grupo de Facebook... ¡Pegá el texto que acabamos de copiar!');
+    setTimeout(() => {
+      window.open(url, '_blank');
+    }, 400);
+  }
+
+  function shareDirectFacebook(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+    copyFacebookPostText(catId);
+    const shareUrl = `https://guille512.github.io/club-del-gato-dashboard/mapa.html`;
+    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    window.open(fbUrl, '_blank', 'width=640,height=580');
+    showToast('📘 Abriendo ventana para publicar en Facebook...');
+  }
+
+  async function generateFacebookFlyer(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+
+    showToast('🎨 Generando flyer cuadrado de alta definición (1200x1200)...');
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 1200;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Fondo elegante oscuro con degradé
+    const bgGrad = ctx.createLinearGradient(0, 0, 1200, 1200);
+    bgGrad.addColorStop(0, '#0f172a');
+    bgGrad.addColorStop(0.5, '#1e293b');
+    bgGrad.addColorStop(1, '#090d16');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1200, 1200);
+
+    // 2. Banner de cabecera
+    ctx.fillStyle = '#1877f2';
+    ctx.fillRect(60, 50, 1080, 70);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 32px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🐾 RED MICHIS CÓRDOBA · DIFUSIÓN COMUNITARIA', 600, 96);
+
+    // 3. Cargar foto del michi
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = cat.foto;
+
+    img.onload = () => {
+      // Dibujar imagen centrada con esquinas redondeadas
+      ctx.save();
+      roundRect(ctx, 150, 160, 900, 540, 24, true, false);
+      ctx.clip();
+      ctx.drawImage(img, 150, 160, 900, 540);
+      ctx.restore();
+
+      // Borde foto
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 4;
+      roundRect(ctx, 150, 160, 900, 540, 24, false, true);
+
+      // Badge de estado
+      const statusLabels = {
+        EMERGENCIA: '🚨 EMERGENCIA MÉDICA',
+        AVISTADO: '🔍 AVISTADO EN CALLE',
+        EN_RESCATE: '🚑 EN RESCATE',
+        TRANSITO: '🏠 EN TRÁNSITO',
+        ADOPCION: '💚 EN ADOPCIÓN'
+      };
+      ctx.fillStyle = '#e53e3e';
+      roundRect(ctx, 180, 190, 360, 50, 25, true, false);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(statusLabels[cat.estado] || cat.estado, 360, 224);
+
+      // Nombre del michi
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 52px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(cat.nombre.toUpperCase(), 600, 760);
+
+      // Barrio y ubicación
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '700 30px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(`📍 ${cat.barrio.toUpperCase()}`, 600, 810);
+
+      // Descripción
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '500 24px "Plus Jakarta Sans", sans-serif';
+      wrapText(ctx, cat.descripcion, 600, 870, 920, 34);
+
+      // Footer con contacto
+      ctx.fillStyle = '#22c55e';
+      roundRect(ctx, 150, 1030, 900, 90, 20, true, false);
+      ctx.fillStyle = '#052e16';
+      ctx.font = '900 32px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(`💬 WHATSAPP: ${cat.whatsapp} · RED MICHIS CBA`, 600, 1086);
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const fileName = `flyer-fb-${cat.nombre.toLowerCase().replace(/[^a-z0-9]/g, '-')}.png`;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        playSuccessChime();
+        showToast(`📸 ¡Flyer para Facebook descargado con éxito!`);
+      }, 'image/png');
+    };
+
+    img.onerror = () => {
+      showToast('⚠️ No se pudo cargar la imagen para el flyer');
+    };
   }
 
   // ==========================================
