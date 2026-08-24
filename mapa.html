@@ -737,6 +737,35 @@
       border-color: rgba(49, 130, 206, 0.4);
     }
 
+    /* BADGES DE ZONAS CRÍTICAS / MAPA DE CALOR */
+    .critical-zone-badge-wrapper {
+      background: transparent;
+      border: none;
+    }
+    .critical-zone-pill {
+      position: relative;
+      background: rgba(229, 62, 62, 0.92);
+      backdrop-filter: blur(6px);
+      color: white;
+      font-size: 0.73rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(229, 62, 62, 0.5);
+      border: 1.5px solid rgba(255,255,255,0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      animation: alertPulse 2s infinite;
+      cursor: pointer;
+    }
+    @keyframes alertPulse {
+      0% { transform: scale(1); box-shadow: 0 4px 14px rgba(229, 62, 62, 0.5); }
+      50% { transform: scale(1.07); box-shadow: 0 6px 20px rgba(229, 62, 62, 0.75); }
+      100% { transform: scale(1); box-shadow: 0 4px 14px rgba(229, 62, 62, 0.5); }
+    }
+
     /* ANIMACIÓN DE ZONA GEOGRÁFICA DE BARRIO */
     .barrio-highlight-zone {
       transition: all 0.5s ease;
@@ -2126,7 +2155,9 @@
         </div>
       </div>
 
-      <div class="quick-actions">
+        <button class="btn btn-secondary" id="btn-heat-toggle" onclick="toggleHeatmap()" title="Activar/Desactivar mapa de calor y alertas de zonas críticas">
+          🔥 Zonas Críticas: OFF
+        </button>
         <button class="btn btn-secondary" id="btn-locate-user" onclick="locateUser()" title="Detectar mi ubicación GPS y calcular distancias a cada michi">
           📍 Mi Ubicación
         </button>
@@ -2435,6 +2466,7 @@
 <!-- SCRIPTS: LEAFLET & MARKERCLUSTER -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
 
 <script>
   // ==========================================
@@ -2653,11 +2685,107 @@
   let activeStatusFilter = 'ALL';
   let activeBarrioFilter = 'ALL';
   let sortByDistance = false;
+  let isHeatmapActive = false;
+  let heatLayer = null;
+  let criticalZoneLabels = [];
   let catCases = [];
   let userLocation = null; // { lat, lng, accuracy }
   let userLocationMarker = null;
   let userAccuracyCircle = null;
   let tempReportMarker = null;
+
+  // ==========================================
+  // MAPA DE CALOR & ZONAS CRÍTICAS
+  // ==========================================
+  function toggleHeatmap() {
+    isHeatmapActive = !isHeatmapActive;
+    const btn = document.getElementById('btn-heat-toggle');
+
+    if (!isHeatmapActive) {
+      if (heatLayer && mapInstance.hasLayer(heatLayer)) {
+        mapInstance.removeLayer(heatLayer);
+      }
+      criticalZoneLabels.forEach(l => mapInstance.removeLayer(l));
+      criticalZoneLabels = [];
+      if (btn) {
+        btn.innerHTML = '🔥 Zonas Críticas: OFF';
+        btn.classList.remove('active');
+        btn.style.background = '';
+        btn.style.color = '';
+      }
+      showToast('🐾 Capa de calor desactivada');
+      return;
+    }
+
+    if (btn) {
+      btn.innerHTML = '🔥 Zonas Críticas: ON';
+      btn.classList.add('active');
+      btn.style.background = '#e53e3e';
+      btn.style.color = 'white';
+    }
+
+    // Calcular puntos de calor ponderados por nivel de urgencia
+    const heatPoints = catCases.map(c => {
+      let weight = 0.5;
+      if (c.estado === 'EMERGENCIA') weight = 1.0;
+      else if (c.estado === 'AVISTADO') weight = 0.85;
+      else if (c.estado === 'EN_RESCATE') weight = 0.6;
+      else if (c.estado === 'TRANSITO') weight = 0.35;
+      return [c.lat, c.lng, weight];
+    });
+
+    if (typeof L.heatLayer === 'function') {
+      if (heatLayer) mapInstance.removeLayer(heatLayer);
+      heatLayer = L.heatLayer(heatPoints, {
+        radius: 38,
+        blur: 26,
+        maxZoom: 16,
+        max: 1.0,
+        gradient: {
+          0.2: '#3182ce',
+          0.4: '#38a169',
+          0.6: '#ecc94b',
+          0.8: '#dd6b20',
+          1.0: '#e53e3e'
+        }
+      }).addTo(mapInstance);
+    }
+
+    // Identificar y destacar con badges flotantes las 3 zonas con mayor concentración
+    const barrioCounts = {};
+    catCases.forEach(c => {
+      const b = c.barrio ? c.barrio.split('(')[0].trim() : 'Otro';
+      barrioCounts[b] = (barrioCounts[b] || 0) + 1;
+    });
+
+    const topBarrios = Object.entries(barrioCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+
+    criticalZoneLabels.forEach(l => mapInstance.removeLayer(l));
+    criticalZoneLabels = [];
+
+    topBarrios.forEach(([barrioName, count], rank) => {
+      if (BARRIO_CENTERS[barrioName]) {
+        const center = BARRIO_CENTERS[barrioName].center;
+        const icon = L.divIcon({
+          className: 'critical-zone-badge-wrapper',
+          html: `
+            <div class="critical-zone-pill" onclick="applyBarrioFilter('${barrioName}')" title="Filtrar por ${barrioName}" style="animation-delay: ${rank * 0.2}s;">
+              🚨 <strong>${barrioName}</strong>: ${count} caso${count === 1 ? '' : 's'}
+            </div>
+          `,
+          iconSize: [160, 30],
+          iconAnchor: [80, 15]
+        });
+        const marker = L.marker(center, { icon: icon, zIndexOffset: 800 }).addTo(mapInstance);
+        criticalZoneLabels.push(marker);
+      }
+    });
+
+    playSuccessChime();
+    showToast('🔥 Mapa de calor y alertas de zonas críticas activadas');
+  }
 
   // ==========================================
   // UTILIDADES DE DISTANCIA & GEOLOCALIZACIÓN (HAVERSINE)
