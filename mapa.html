@@ -360,6 +360,170 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* BARRA DE BÚSQUEDA EN TIEMPO REAL */
+    .search-container {
+      position: relative;
+      width: 100%;
+      margin: 8px 0 4px 0;
+      z-index: 1001;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1.5px solid #cbd5e0;
+      border-radius: var(--radius-md);
+      padding: 7px 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .search-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.18), 0 4px 12px rgba(0,0,0,0.08);
+      background: #fffdfc;
+    }
+
+    .search-icon {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-right: 8px;
+      user-select: none;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--dark);
+      background: transparent;
+    }
+
+    .search-input::placeholder {
+      color: #a0aec0;
+      font-weight: 500;
+    }
+
+    .search-clear {
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
+      color: #a0aec0;
+      cursor: pointer;
+      padding: 0 4px;
+      transition: color 0.15s ease;
+      line-height: 1;
+    }
+
+    .search-clear:hover {
+      color: #e53e3e;
+    }
+
+    .search-shortcut-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: #edf2f7;
+      color: #718096;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e0;
+      margin-left: 6px;
+      user-select: none;
+    }
+
+    /* DROPDOWN DE RESULTADOS DE BÚSQUEDA */
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      max-height: 320px;
+      overflow-y: auto;
+      z-index: 1002;
+      animation: searchDropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes searchDropIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-item:hover, .search-item.selected {
+      background: #fff7ed;
+    }
+
+    .search-item-thumb {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #edf2f7;
+    }
+
+    .search-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-item-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-item-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search-item-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      color: white;
+    }
+
+    .search-empty-state {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
     @keyframes pinEntrance {
       0% { transform: scale(0) translateY(24px); opacity: 0; }
       60% { transform: scale(1.22) translateY(-4px); opacity: 1; }
@@ -1301,6 +1465,21 @@
       </div>
     </div>
 
+    <!-- BARRA DE BÚSQUEDA EN TIEMPO REAL -->
+    <div class="search-container">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar michi por nombre, rescatista, barrio o descripción... (Ctrl+K o /)" autocomplete="off" oninput="handleSearchInput(this.value)" onfocus="handleSearchFocus()" onkeydown="handleSearchKeydown(event)">
+        <button id="search-clear-btn" class="search-clear" onclick="clearSearch()" style="display: none;" title="Limpiar búsqueda">&times;</button>
+        <span class="search-shortcut-badge">Ctrl K</span>
+      </div>
+
+      <!-- DROPDOWN DE RESULTADOS EN VIVO -->
+      <div id="search-dropdown" class="search-dropdown" style="display: none;">
+        <!-- Se inyecta dinámicamente -->
+      </div>
+    </div>
+
     <!-- CONTENEDOR DE FILTROS FLOTANTES -->
     <div class="filter-section-wrapper">
       <!-- FILA 1: CHIPS DE FILTRO POR ESTADO DE URGENCIA -->
@@ -1730,13 +1909,175 @@
     });
   }
 
+  // ==========================================
+  // FILTRADO Y BÚSQUEDA EN TIEMPO REAL
+  // ==========================================
+  let searchQuery = '';
+  let selectedSearchIndex = -1;
+
   function getFilteredCases() {
     return catCases.filter(cat => {
       // 1. Filtro por estado
       const matchStatus = activeStatusFilter === 'ALL' || cat.estado === activeStatusFilter;
       // 2. Filtro por barrio
       const matchBarrio = activeBarrioFilter === 'ALL' || (cat.barrio && cat.barrio.toLowerCase().includes(activeBarrioFilter.toLowerCase()));
-      return matchStatus && matchBarrio;
+      // 3. Búsqueda en vivo (nombre, barrio, rescatista, salud o descripción)
+      let matchSearch = true;
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase().trim();
+        const inNombre = (cat.nombre || '').toLowerCase().includes(q);
+        const inBarrio = (cat.barrio || '').toLowerCase().includes(q);
+        const inRescatista = (cat.reportadoPor || '').toLowerCase().includes(q);
+        const inDesc = (cat.descripcion || '').toLowerCase().includes(q);
+        const inSalud = (cat.salud || '').toLowerCase().includes(q);
+        matchSearch = inNombre || inBarrio || inRescatista || inDesc || inSalud;
+      }
+      return matchStatus && matchBarrio && matchSearch;
+    });
+  }
+
+  function handleSearchInput(val) {
+    searchQuery = val || '';
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) {
+      clearBtn.style.display = searchQuery.trim() ? 'block' : 'none';
+    }
+
+    renderMarkers(true);
+    renderSearchDropdown();
+  }
+
+  function handleSearchFocus() {
+    if (searchQuery.trim().length > 0) {
+      renderSearchDropdown();
+    }
+  }
+
+  function renderSearchDropdown() {
+    const dropdown = document.getElementById('search-dropdown');
+    if (!dropdown) return;
+
+    if (!searchQuery.trim()) {
+      dropdown.style.display = 'none';
+      return;
+    }
+
+    const q = searchQuery.toLowerCase().trim();
+    const matches = catCases.filter(cat => {
+      const inNombre = (cat.nombre || '').toLowerCase().includes(q);
+      const inBarrio = (cat.barrio || '').toLowerCase().includes(q);
+      const inRescatista = (cat.reportadoPor || '').toLowerCase().includes(q);
+      const inDesc = (cat.descripcion || '').toLowerCase().includes(q);
+      return inNombre || inBarrio || inRescatista || inDesc;
+    }).slice(0, 6);
+
+    selectedSearchIndex = -1;
+
+    if (matches.length === 0) {
+      dropdown.innerHTML = `
+        <div class="search-empty-state">
+          🐱 No se encontraron michis ni rescatistas para "<strong>${escapeHtml(searchQuery)}</strong>"
+        </div>
+      `;
+      dropdown.style.display = 'block';
+      return;
+    }
+
+    const statusColors = {
+      EMERGENCIA: '#e53e3e',
+      AVISTADO: '#dd6b20',
+      EN_RESCATE: '#3182ce',
+      TRANSITO: '#805ad5',
+      ADOPCION: '#38a169'
+    };
+
+    dropdown.innerHTML = matches.map((cat, idx) => `
+      <div class="search-item" data-index="${idx}" onclick="selectSearchResult('${cat.id}')">
+        <img src="${cat.foto}" alt="${cat.nombre}" class="search-item-thumb" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=120&q=80'">
+        <div class="search-item-info">
+          <div class="search-item-title">
+            <span>${cat.nombre}</span>
+            <span class="search-item-badge" style="background: ${statusColors[cat.estado] || '#718096'};">
+              ${cat.estado.replace('_', ' ')}
+            </span>
+          </div>
+          <div class="search-item-meta">
+            <span>📍 ${cat.barrio.split('(')[0].trim()}</span>
+            <span>👤 ${cat.reportadoPor || 'Comunidad'}</span>
+          </div>
+        </div>
+        <div style="font-size: 0.9rem; color: var(--primary);">➔</div>
+      </div>
+    `).join('');
+
+    dropdown.style.display = 'block';
+  }
+
+  function handleSearchKeydown(e) {
+    const dropdown = document.getElementById('search-dropdown');
+    if (!dropdown || dropdown.style.display === 'none') return;
+
+    const items = dropdown.querySelectorAll('.search-item');
+    if (items.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedSearchIndex = (selectedSearchIndex + 1) % items.length;
+      updateDropdownSelection(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedSearchIndex = (selectedSearchIndex - 1 + items.length) % items.length;
+      updateDropdownSelection(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedSearchIndex >= 0 && selectedSearchIndex < items.length) {
+        items[selectedSearchIndex].click();
+      } else if (items.length > 0) {
+        items[0].click();
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.style.display = 'none';
+    }
+  }
+
+  function updateDropdownSelection(items) {
+    items.forEach((item, i) => {
+      item.classList.toggle('selected', i === selectedSearchIndex);
+      if (i === selectedSearchIndex) {
+        item.scrollIntoView({ block: 'nearest' });
+      }
+    });
+  }
+
+  function selectSearchResult(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    const dropdown = document.getElementById('search-dropdown');
+    if (dropdown) dropdown.style.display = 'none';
+
+    if (cat) {
+      openSidebarWithCat(cat);
+      mapInstance.flyTo([cat.lat, cat.lng], 16, { duration: 0.7 });
+      playSuccessChime();
+      showToast(`🎯 Mostrando caso de ${cat.nombre}`);
+    }
+  }
+
+  function clearSearch() {
+    searchQuery = '';
+    const input = document.getElementById('search-input');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'none';
+    const dropdown = document.getElementById('search-dropdown');
+    if (dropdown) dropdown.style.display = 'none';
+
+    renderMarkers(true);
+    showToast('🧹 Búsqueda restablecida');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
     });
   }
 
@@ -3139,6 +3480,34 @@
     updateSoundButton();
     loadCases();
     initMap();
+
+    // Atajos de teclado para búsqueda (Ctrl+K o /)
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      } else if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+    });
+
+    // Cerrar dropdown al hacer click afuera
+    document.addEventListener('click', (e) => {
+      const container = document.querySelector('.search-container');
+      const dropdown = document.getElementById('search-dropdown');
+      if (dropdown && container && !container.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
   });
 </script>
 
