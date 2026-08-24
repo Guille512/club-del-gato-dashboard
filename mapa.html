@@ -782,6 +782,159 @@
       transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .modal-card-lg {
+      max-width: 720px;
+    }
+
+    .stats-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-kpi-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .stat-kpi-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-kpi-card.highlight {
+      background: #fff7ed;
+      border-color: #fdba74;
+    }
+
+    .stat-kpi-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .stat-kpi-val {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--dark);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .stat-kpi-sub {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .stats-progress-container {
+      background: #f1f5f9;
+      border-radius: 999px;
+      height: 14px;
+      display: flex;
+      overflow: hidden;
+      margin: 10px 0 16px 0;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-bar-seg {
+      height: 100%;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .stat-legend-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .stat-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .stat-legend-item:hover {
+      background: #f1f5f9;
+    }
+
+    .stat-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .stat-barrios-list {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 6px 0;
+      margin-bottom: 20px;
+    }
+
+    .stat-barrio-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .stat-barrio-item:last-child {
+      border-bottom: none;
+    }
+
+    .stat-barrio-item:hover {
+      background: #f8fafc;
+    }
+
+    .stat-barrio-name {
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-barrio-metrics {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-barrio-pill {
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: #e2e8f0;
+      color: var(--dark);
+    }
+
     .modal-overlay.open .modal-card {
       transform: scale(1);
     }
@@ -949,6 +1102,9 @@
       </div>
 
       <div class="quick-actions">
+        <button class="btn btn-secondary" onclick="openStatsModal()" title="Ver estadísticas en vivo de rescates en Córdoba">
+          📊 Estadísticas
+        </button>
         <button class="btn btn-secondary" id="btn-sound-toggle" onclick="toggleSound()" title="Activar/Desactivar maullidos y efectos de sonido">
           🔊 Sonido: ON
         </button>
@@ -1100,6 +1256,27 @@
           📍 Publicar Alerta en el Mapa
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ESTADÍSTICAS EN VIVO DE RESCATES EN CÓRDOBA -->
+  <div class="modal-overlay" id="stats-modal">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <span>📊</span> Monitor Comunitario de Rescate Michi
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Métricas en tiempo real sobre avistamientos, rescates y efectividad en Córdoba Capital
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeStatsModal()">&times;</button>
+      </div>
+
+      <div id="stats-modal-body">
+        <!-- Renderizado dinámico con renderLiveStats() -->
+      </div>
     </div>
   </div>
 
@@ -2141,6 +2318,226 @@
       const msg = encodeURIComponent(`Hola! Te escribo por el caso de *${cat.nombre}* en ${cat.barrio} publicado en Red Michis Córdoba.`);
       window.open(`https://wa.me/${cat.whatsapp.replace(/\D/g,'')}?text=${msg}`, '_blank');
     }
+  }
+
+  // ==========================================
+  // MODAL DE ESTADÍSTICAS EN VIVO DE RESCATES
+  // ==========================================
+  function openStatsModal() {
+    renderLiveStats();
+    document.getElementById('stats-modal').classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeStatsModal() {
+    document.getElementById('stats-modal').classList.remove('open');
+  }
+
+  function renderLiveStats() {
+    const total = catCases.length;
+    const emergencias = catCases.filter(c => c.estado === 'EMERGENCIA').length;
+    const avistados = catCases.filter(c => c.estado === 'AVISTADO').length;
+    const rescates = catCases.filter(c => c.estado === 'EN_RESCATE').length;
+    const transitos = catCases.filter(c => c.estado === 'TRANSITO').length;
+    const adopciones = catCases.filter(c => c.estado === 'ADOPCION').length;
+
+    const resueltosOEnCamino = rescates + transitos + adopciones;
+    const tasaRescate = total > 0 ? Math.round((resueltosOEnCamino / total) * 100) : 0;
+
+    let totalDeuda = 0;
+    let totalRecaudado = 0;
+    catCases.forEach(c => {
+      totalDeuda += (c.deudaVet || 0);
+      totalRecaudado += (c.recaudado || 0);
+    });
+    const porcRecaudado = totalDeuda > 0 ? Math.min(100, Math.round((totalRecaudado / totalDeuda) * 100)) : 100;
+
+    // Desglose por barrios
+    const barrioMap = {};
+    catCases.forEach(c => {
+      let b = c.barrio.split('(')[0].trim();
+      if (!b) b = "Otro Barrio";
+      if (!barrioMap[b]) {
+        barrioMap[b] = { total: 0, emergencias: 0, avistados: 0, resueltos: 0 };
+      }
+      barrioMap[b].total += 1;
+      if (c.estado === 'EMERGENCIA') barrioMap[b].emergencias += 1;
+      else if (c.estado === 'AVISTADO') barrioMap[b].avistados += 1;
+      else barrioMap[b].resueltos += 1;
+    });
+
+    const barriosList = Object.entries(barrioMap).sort((a, b) => b[1].total - a[1].total);
+
+    // Porcentajes de barra horizontal
+    const pEmerg = total > 0 ? (emergencias / total) * 100 : 0;
+    const pAvis = total > 0 ? (avistados / total) * 100 : 0;
+    const pResc = total > 0 ? (rescates / total) * 100 : 0;
+    const pTran = total > 0 ? (transitos / total) * 100 : 0;
+    const pAdop = total > 0 ? (adopciones / total) * 100 : 0;
+
+    const html = `
+      <!-- KPIS PRINCIPALES -->
+      <div class="stats-kpi-grid">
+        <div class="stat-kpi-card highlight" onclick="filterFromStats('ALL')" title="Ver todos los casos">
+          <div class="stat-kpi-label">🐾 Total Casos</div>
+          <div class="stat-kpi-val">${total}</div>
+          <div class="stat-kpi-sub">Reportados en Cba</div>
+        </div>
+        <div class="stat-kpi-card" onclick="filterFromStats('EMERGENCIA')" title="Filtrar emergencias médicas">
+          <div class="stat-kpi-label" style="color: var(--color-emergencia);">🚨 Emergencias</div>
+          <div class="stat-kpi-val" style="color: var(--color-emergencia);">${emergencias}</div>
+          <div class="stat-kpi-sub">Urgencia médica</div>
+        </div>
+        <div class="stat-kpi-card" onclick="filterFromStats('AVISTADO')" title="Filtrar michis en calle">
+          <div class="stat-kpi-label" style="color: var(--color-avistado);">🔍 En Calle</div>
+          <div class="stat-kpi-val" style="color: var(--color-avistado);">${avistados}</div>
+          <div class="stat-kpi-sub">Esperando ayuda</div>
+        </div>
+        <div class="stat-kpi-card" onclick="filterFromStats('EN_RESCATE')" title="Filtrar casos en rescate">
+          <div class="stat-kpi-label" style="color: var(--color-rescate);">🚑 En Rescate</div>
+          <div class="stat-kpi-val" style="color: var(--color-rescate);">${rescates}</div>
+          <div class="stat-kpi-sub">Voluntario asignado</div>
+        </div>
+        <div class="stat-kpi-card" onclick="filterFromStats('TRANSITO')" title="Filtrar michis en tránsito">
+          <div class="stat-kpi-label" style="color: var(--color-transito);">🏠 En Tránsito</div>
+          <div class="stat-kpi-val" style="color: var(--color-transito);">${transitos}</div>
+          <div class="stat-kpi-sub">Hogar provisorio</div>
+        </div>
+        <div class="stat-kpi-card" onclick="filterFromStats('ADOPCION')" title="Filtrar michis en adopción">
+          <div class="stat-kpi-label" style="color: var(--color-adopcion);">💚 Adopción</div>
+          <div class="stat-kpi-val" style="color: var(--color-adopcion);">${adopciones}</div>
+          <div class="stat-kpi-sub">Listos para familia</div>
+        </div>
+      </div>
+
+      <!-- EFECTIVIDAD COMUNITARIA & BARRA PROPORCIONAL -->
+      <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; color: var(--dark);">
+            📈 Tasa de Rescate y Asistencia Comunitaria
+          </span>
+          <span style="font-size: 1.15rem; font-weight: 900; color: #16a34a;">
+            ${tasaRescate}%
+          </span>
+        </div>
+        <p style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 8px;">
+          ${resueltosOEnCamino} de ${total} michis ya cuentan con rescate activo, hogar de tránsito o familia definitiva.
+        </p>
+        
+        <div class="stats-progress-container">
+          <div class="stat-bar-seg" style="width: ${pEmerg}%; background: var(--color-emergencia);" title="Emergencias: ${emergencias}"></div>
+          <div class="stat-bar-seg" style="width: ${pAvis}%; background: var(--color-avistado);" title="En Calle: ${avistados}"></div>
+          <div class="stat-bar-seg" style="width: ${pResc}%; background: var(--color-rescate);" title="En Rescate: ${rescates}"></div>
+          <div class="stat-bar-seg" style="width: ${pTran}%; background: var(--color-transito);" title="En Tránsito: ${transitos}"></div>
+          <div class="stat-bar-seg" style="width: ${pAdop}%; background: var(--color-adopcion);" title="En Adopción: ${adopciones}"></div>
+        </div>
+
+        <div class="stat-legend-grid">
+          <div class="stat-legend-item" onclick="filterFromStats('EMERGENCIA')">
+            <span class="stat-legend-dot" style="background: var(--color-emergencia);"></span>
+            <span>Emergencias (${emergencias})</span>
+          </div>
+          <div class="stat-legend-item" onclick="filterFromStats('AVISTADO')">
+            <span class="stat-legend-dot" style="background: var(--color-avistado);"></span>
+            <span>En Calle (${avistados})</span>
+          </div>
+          <div class="stat-legend-item" onclick="filterFromStats('EN_RESCATE')">
+            <span class="stat-legend-dot" style="background: var(--color-rescate);"></span>
+            <span>En Rescate (${rescates})</span>
+          </div>
+          <div class="stat-legend-item" onclick="filterFromStats('TRANSITO')">
+            <span class="stat-legend-dot" style="background: var(--color-transito);"></span>
+            <span>En Tránsito (${transitos})</span>
+          </div>
+          <div class="stat-legend-item" onclick="filterFromStats('ADOPCION')">
+            <span class="stat-legend-dot" style="background: var(--color-adopcion);"></span>
+            <span>En Adopción (${adopciones})</span>
+          </div>
+        </div>
+
+        <!-- BALANCE SOLIDARIO VETERINARIO -->
+        <div style="background: #f8fafc; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">
+              💙 Fondos Solidarios para Veterinarias
+            </div>
+            <div style="font-size: 0.95rem; font-weight: 900; color: var(--dark); margin-top: 2px;">
+              $${totalRecaudado.toLocaleString('es-AR')} <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">recaudados de $${totalDeuda.toLocaleString('es-AR')} en deudas</span>
+            </div>
+          </div>
+          <div style="font-size: 0.95rem; font-weight: 900; color: #2563eb; background: #dbeafe; padding: 4px 10px; border-radius: 20px;">
+            ${porcRecaudado}% Cubierto
+          </div>
+        </div>
+      </div>
+
+      <!-- DESGLOSE POR BARRIO DE CÓRDOBA -->
+      <h4 style="font-size: 0.88rem; font-weight: 800; text-transform: uppercase; color: var(--dark); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+        <span>📍 Distribución por Barrios de Córdoba</span>
+        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">(Click para filtrar)</span>
+      </h4>
+
+      <div class="stat-barrios-list">
+        ${barriosList.map(([barrio, data]) => `
+          <div class="stat-barrio-item" onclick="filterFromStats('ALL', '${barrio}')" title="Filtrar casos de ${barrio}">
+            <div class="stat-barrio-name">
+              <span>📍</span> ${barrio}
+            </div>
+            <div class="stat-barrio-metrics">
+              ${data.emergencias > 0 ? `<span style="font-size:0.72rem; font-weight:800; color:#e53e3e;">🚨 ${data.emergencias}</span>` : ''}
+              ${data.avistados > 0 ? `<span style="font-size:0.72rem; font-weight:800; color:#dd6b20;">🔍 ${data.avistados}</span>` : ''}
+              ${data.resueltos > 0 ? `<span style="font-size:0.72rem; font-weight:800; color:#16a34a;">✅ ${data.resueltos}</span>` : ''}
+              <span class="stat-barrio-pill">${data.total} casos</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- ACCIONES DEL MODAL -->
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button class="btn btn-whatsapp btn-full" onclick="shareStatsWhatsApp()" title="Compartir métricas comunitarias en WhatsApp">
+          📢 Difundir Resumen en WhatsApp
+        </button>
+        <button class="btn btn-white" onclick="closeStatsModal()" title="Cerrar modal">
+          Cerrar
+        </button>
+      </div>
+    `;
+
+    document.getElementById('stats-modal-body').innerHTML = html;
+  }
+
+  function filterFromStats(status = 'ALL', barrio = 'ALL') {
+    closeStatsModal();
+    if (status !== 'ALL') {
+      applyFilter(status);
+    }
+    if (barrio !== 'ALL') {
+      applyBarrioFilter(barrio);
+    }
+    showToast(`🔍 Filtrando mapa: ${status !== 'ALL' ? status : ''} ${barrio !== 'ALL' ? 'en ' + barrio : ''}`);
+  }
+
+  function shareStatsWhatsApp() {
+    const total = catCases.length;
+    const emergencias = catCases.filter(c => c.estado === 'EMERGENCIA').length;
+    const avistados = catCases.filter(c => c.estado === 'AVISTADO').length;
+    const rescates = catCases.filter(c => c.estado === 'EN_RESCATE').length;
+    const transitos = catCases.filter(c => c.estado === 'TRANSITO').length;
+    const adopciones = catCases.filter(c => c.estado === 'ADOPCION').length;
+    const tasa = total > 0 ? Math.round(((rescates + transitos + adopciones) / total) * 100) : 0;
+
+    const msg = `*📊 REPORTE COMUNITARIO · RED MICHIS CÓRDOBA*\n\n` +
+      `🐾 *Total Casos Reportados:* ${total}\n` +
+      `🚨 *Emergencias Médicas:* ${emergencias}\n` +
+      `🔍 *En Calle (Esperando Tránsito):* ${avistados}\n` +
+      `🚑 *En Rescate / Asignados:* ${rescates}\n` +
+      `🏠 *En Tránsito Provisorio:* ${transitos}\n` +
+      `💚 *En Adopción Responsable:* ${adopciones}\n\n` +
+      `📈 *Efectividad y Rescate:* ${tasa}% de los michis ya cuentan con asistencia activa.\n\n` +
+      `👉 ¡Sumate a dar tránsito o reportar avistamientos en Córdoba!`;
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   // ==========================================
