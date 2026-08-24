@@ -847,6 +847,272 @@
       100% { transform: scale(1); }
     }
 
+    /* CARRUSEL DE FOTOS & EVOLUCIÓN MÉDICA */
+    .cat-carousel-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 14px;
+      background: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      height: 230px;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: zoom-in;
+      transition: transform 0.3s ease;
+    }
+    .carousel-slide img:hover {
+      transform: scale(1.02);
+    }
+
+    .carousel-overlay-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(0deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.45) 70%, transparent 100%);
+      padding: 10px 14px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .carousel-caption-text {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      max-width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .carousel-badge-type {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .carousel-badge-AVISTAMIENTO { background: #dd6b20; color: white; }
+    .carousel-badge-MEDICO { background: #319795; color: white; }
+    .carousel-badge-RECUPERACION { background: #38a169; color: white; }
+    .carousel-badge-INICIAL { background: #3182ce; color: white; }
+
+    .carousel-counter-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(6px);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .carousel-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 6;
+      transition: all 0.2s ease;
+    }
+    .carousel-nav-btn:hover {
+      background: var(--primary);
+      transform: translateY(-50%) scale(1.1);
+      border-color: var(--primary);
+    }
+    .carousel-nav-prev { left: 8px; }
+    .carousel-nav-next { right: 8px; }
+
+    .carousel-thumbs-row {
+      display: flex;
+      gap: 6px;
+      padding: 6px 8px;
+      background: rgba(15, 23, 42, 0.95);
+      overflow-x: auto;
+      align-items: center;
+    }
+
+    .carousel-thumb {
+      flex: 0 0 44px;
+      height: 32px;
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 0.55;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .carousel-thumb:hover { opacity: 0.85; }
+    .carousel-thumb.active {
+      opacity: 1;
+      border-color: var(--primary);
+      box-shadow: 0 0 6px rgba(255, 107, 74, 0.6);
+    }
+    .carousel-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* LIGHTBOX MODAL FULLSCREEN */
+    .lightbox-container {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #090d16;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255,255,255,0.12);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .lightbox-img-wrapper {
+      max-width: 100%;
+      max-height: 72vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 72vh;
+      object-fit: contain;
+    }
+
+    .lightbox-footer {
+      width: 100%;
+      padding: 14px 20px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .lightbox-info h4 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .lightbox-meta {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .lightbox-counter {
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.1);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .lightbox-close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .lightbox-close-btn:hover {
+      background: #e53e3e;
+      transform: scale(1.08);
+    }
+
+    .lightbox-nav-btn {
+      position: absolute;
+      top: 45%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(15, 23, 42, 0.75);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .lightbox-nav-btn:hover {
+      background: var(--primary);
+      transform: translateY(-50%) scale(1.1);
+    }
+    .lightbox-prev { left: 14px; }
+    .lightbox-next { right: 14px; }
+
     .btn-meow-interactive {
       position: absolute;
       bottom: 12px;
@@ -1986,6 +2252,25 @@
     </div>
   </aside>
 
+  <!-- MODAL: LIGHTBOX GALERÍA DE FOTOS MÉDICAS -->
+  <div class="modal-overlay" id="gallery-lightbox-modal" onclick="closeLightbox(event)">
+    <div class="lightbox-container" onclick="event.stopPropagation()">
+      <button class="lightbox-close-btn" onclick="closeLightbox()" title="Cerrar (Esc)">&times;</button>
+      <button class="lightbox-nav-btn lightbox-prev" onclick="prevLightbox()" title="Foto anterior (Flecha Izquierda)">&lt;</button>
+      <button class="lightbox-nav-btn lightbox-next" onclick="nextLightbox()" title="Foto siguiente (Flecha Derecha)">&gt;</button>
+      <div class="lightbox-img-wrapper">
+        <img id="lightbox-img" src="" alt="Foto médica en alta definición" class="lightbox-img">
+      </div>
+      <div class="lightbox-footer">
+        <div class="lightbox-info">
+          <h4 id="lightbox-title">Evolución Médica</h4>
+          <div id="lightbox-meta" class="lightbox-meta"></div>
+        </div>
+        <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: REPORTAR AVISTAMIENTO -->
   <div class="modal-overlay" id="report-modal">
     <div class="modal-card">
@@ -2168,6 +2453,26 @@
       lng: -64.1878,
       barrio: "Nueva Córdoba (Hipólito Yrigoyen al 300)",
       foto: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+          titulo: "Avistamiento inicial en Buen Pastor",
+          fecha: "Día 1 - 14:20hs",
+          tipo: "AVISTAMIENTO"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=600&q=80",
+          titulo: "Placa y vendaje en Guardia Veterinaria",
+          fecha: "Día 1 - 16:45hs",
+          tipo: "MEDICO"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
+          titulo: "Evolución en Hogar de Tránsito",
+          fecha: "Hoy",
+          tipo: "RECUPERACION"
+        }
+      ],
       edad: "Aprox. 6 meses",
       sexo: "Macho",
       castrado: "No (Urgente)",
@@ -2187,6 +2492,20 @@
       lng: -64.1985,
       barrio: "Alberdi (Av. Colón esq. Santa Fe)",
       foto: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80",
+          titulo: "Mamá gata en patio baldío de Alberdi",
+          fecha: "Hace 2 horas",
+          tipo: "AVISTAMIENTO"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?auto=format&fit=crop&w=600&q=80",
+          titulo: "Lactantes resguardados en caja térmica",
+          fecha: "Hace 40 min",
+          tipo: "RECUPERACION"
+        }
+      ],
       edad: "Mamá joven (1 año) + 4 lactantes",
       sexo: "Hembra",
       castrado: "Pendiente post-lactancia",
@@ -2206,6 +2525,20 @@
       lng: -64.1823,
       barrio: "Alta Córdoba (Plaza Rivadavia)",
       foto: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
+          titulo: "Simba en Plaza Rivadavia (Alta Córdoba)",
+          fecha: "Hace 3 horas",
+          tipo: "AVISTAMIENTO"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=600&q=80",
+          titulo: "Ingreso e hidratación en clínica",
+          fecha: "Hace 1 hora",
+          tipo: "MEDICO"
+        }
+      ],
       edad: "2 años",
       sexo: "Macho",
       castrado: "Sí",
@@ -2225,6 +2558,20 @@
       lng: -64.1950,
       barrio: "Barrio Güemes / Observatorio",
       foto: "https://images.unsplash.com/photo-1561948955-570b270e7c36?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1561948955-570b270e7c36?auto=format&fit=crop&w=600&q=80",
+          titulo: "Oreo jugando en el hogar de tránsito",
+          fecha: "Ayer",
+          tipo: "RECUPERACION"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=600&q=80",
+          titulo: "Libreta sanitaria y test negativo",
+          fecha: "Día 15",
+          tipo: "MEDICO"
+        }
+      ],
       edad: "8 meses",
       sexo: "Macho",
       castrado: "Sí",
@@ -2244,6 +2591,20 @@
       lng: -64.2345,
       barrio: "Villa Belgrano / Argüello",
       foto: "https://images.unsplash.com/photo-1513360309081-38f0762b4742?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1513360309081-38f0762b4742?auto=format&fit=crop&w=600&q=80",
+          titulo: "Mía lista para adopción definitiva",
+          fecha: "Hoy",
+          tipo: "RECUPERACION"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+          titulo: "Foto del rescate hace 3 meses en zona norte",
+          fecha: "Hace 3 meses",
+          tipo: "AVISTAMIENTO"
+        }
+      ],
       edad: "1 año y medio",
       sexo: "Hembra",
       castrado: "Sí",
@@ -2263,6 +2624,14 @@
       lng: -64.1560,
       barrio: "San Vicente (Plaza Lavalle)",
       foto: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=600&q=80",
+      fotos: [
+        {
+          url: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=600&q=80",
+          titulo: "Michi Gris avistado cerca de Plaza Lavalle",
+          fecha: "Hace 5 horas",
+          tipo: "AVISTAMIENTO"
+        }
+      ],
       edad: "Adulto joven",
       sexo: "Desconocido",
       castrado: "Probable no",
@@ -2994,12 +3363,7 @@
     }
 
     content.innerHTML = `
-      <div class="cat-img-wrapper">
-        <img src="${cat.foto}" alt="${cat.nombre}" class="cat-profile-img" onclick="playMeowAudio('cute')" title="¡Hacé click para escucharme maullar!" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80'">
-        <button class="btn-meow-interactive" onclick="playMeowAudio('cute')" title="Escuchar maullido">
-          <span>🐱</span> ¡Miau!
-        </button>
-      </div>
+      ${renderCarouselHtml(cat)}
 
       <div class="badge-status status-${cat.estado}">
         ${statusLabels[cat.estado] || cat.estado}
@@ -3209,6 +3573,183 @@
   function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
   }
+
+  // ==========================================
+  // CARRUSEL DE FOTOS & EVOLUCIÓN MÉDICA
+  // ==========================================
+  let activeCatSlideIndices = {};
+  let activeLightboxCatId = null;
+  let activeLightboxIndex = 0;
+
+  function getCatPhotos(cat) {
+    if (cat.fotos && cat.fotos.length > 0) {
+      return cat.fotos;
+    }
+    return [
+      {
+        url: cat.foto,
+        titulo: cat.nombre,
+        fecha: cat.fecha,
+        tipo: cat.estado === 'EMERGENCIA' ? 'MEDICO' : 'AVISTAMIENTO'
+      }
+    ];
+  }
+
+  function renderCarouselHtml(cat) {
+    const photos = getCatPhotos(cat);
+    const currentIndex = activeCatSlideIndices[cat.id] || 0;
+    const total = photos.length;
+
+    const slidesHtml = photos.map((p, idx) => `
+      <div class="carousel-slide" onclick="openLightbox('${cat.id}', ${idx})" title="Click para ver en pantalla completa">
+        <img src="${p.url}" alt="${p.titulo || cat.nombre}" onclick="playMeowAudio('cute')" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80'">
+        <div class="carousel-overlay-caption">
+          <span class="carousel-caption-text">📷 ${escapeHtml(p.titulo || cat.nombre)}</span>
+          <span class="carousel-badge-type carousel-badge-${p.tipo || 'INICIAL'}">${p.tipo || 'FOTO'}</span>
+        </div>
+      </div>
+    `).join('');
+
+    const thumbsHtml = total > 1 ? `
+      <div class="carousel-thumbs-row">
+        ${photos.map((p, idx) => `
+          <div class="carousel-thumb ${idx === currentIndex ? 'active' : ''}" onclick="setCatSlide('${cat.id}', ${idx})" title="${escapeHtml(p.titulo || '')}">
+            <img src="${p.url}" alt="Miniatura ${idx + 1}" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=100&q=80'">
+          </div>
+        `).join('')}
+      </div>
+    ` : '';
+
+    const navBtnsHtml = total > 1 ? `
+      <button class="carousel-nav-btn carousel-nav-prev" onclick="prevCatSlide('${cat.id}')" title="Foto anterior">&#10094;</button>
+      <button class="carousel-nav-btn carousel-nav-next" onclick="nextCatSlide('${cat.id}')" title="Foto siguiente">&#10095;</button>
+      <div class="carousel-counter-badge">📷 ${currentIndex + 1} / ${total}</div>
+    ` : '';
+
+    return `
+      <div class="cat-carousel-wrapper" id="carousel-${cat.id}">
+        <div class="carousel-stage">
+          <div class="carousel-track" id="carousel-track-${cat.id}" style="transform: translateX(-${currentIndex * 100}%);">
+            ${slidesHtml}
+          </div>
+          ${navBtnsHtml}
+          <button class="btn-meow-interactive" onclick="playMeowAudio('cute')" title="Escuchar maullido">
+            <span>🐱</span> ¡Miau!
+          </button>
+        </div>
+        ${thumbsHtml}
+      </div>
+    `;
+  }
+
+  function setCatSlide(catId, index) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+    const photos = getCatPhotos(cat);
+    const total = photos.length;
+    if (total <= 1) return;
+
+    const newIndex = (index + total) % total;
+    activeCatSlideIndices[catId] = newIndex;
+
+    const track = document.getElementById(`carousel-track-${catId}`);
+    if (track) {
+      track.style.transform = `translateX(-${newIndex * 100}%)`;
+    }
+
+    const carousel = document.getElementById(`carousel-${catId}`);
+    if (carousel) {
+      const counter = carousel.querySelector('.carousel-counter-badge');
+      if (counter) counter.textContent = `📷 ${newIndex + 1} / ${total}`;
+
+      const thumbs = carousel.querySelectorAll('.carousel-thumb');
+      thumbs.forEach((th, i) => {
+        th.classList.toggle('active', i === newIndex);
+      });
+    }
+  }
+
+  function nextCatSlide(catId) {
+    const current = activeCatSlideIndices[catId] || 0;
+    setCatSlide(catId, current + 1);
+  }
+
+  function prevCatSlide(catId) {
+    const current = activeCatSlideIndices[catId] || 0;
+    setCatSlide(catId, current - 1);
+  }
+
+  // ==========================================
+  // LIGHTBOX MODAL FULLSCREEN CONTROLLER
+  // ==========================================
+  function openLightbox(catId, photoIndex) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+    const photos = getCatPhotos(cat);
+    if (photos.length === 0) return;
+
+    activeLightboxCatId = catId;
+    activeLightboxIndex = (photoIndex + photos.length) % photos.length;
+
+    updateLightboxUI();
+
+    const modal = document.getElementById('gallery-lightbox-modal');
+    if (modal) modal.classList.add('open');
+  }
+
+  function updateLightboxUI() {
+    const cat = catCases.find(c => c.id === activeLightboxCatId);
+    if (!cat) return;
+    const photos = getCatPhotos(cat);
+    const photo = photos[activeLightboxIndex];
+
+    const img = document.getElementById('lightbox-img');
+    const title = document.getElementById('lightbox-title');
+    const meta = document.getElementById('lightbox-meta');
+    const counter = document.getElementById('lightbox-counter');
+
+    if (img) img.src = photo.url;
+    if (title) title.textContent = `${cat.nombre} — ${photo.titulo || 'Evolución Médica'}`;
+    if (meta) meta.textContent = `Fecha: ${photo.fecha || cat.fecha} · Tipo: ${photo.tipo || 'Foto'}`;
+    if (counter) counter.textContent = `${activeLightboxIndex + 1} / ${photos.length}`;
+  }
+
+  function closeLightbox(e) {
+    if (e && e.target && e.target.id !== 'gallery-lightbox-modal' && !e.target.classList.contains('lightbox-close-btn')) {
+      return;
+    }
+    const modal = document.getElementById('gallery-lightbox-modal');
+    if (modal) modal.classList.remove('open');
+    activeLightboxCatId = null;
+  }
+
+  function nextLightbox() {
+    if (!activeLightboxCatId) return;
+    const cat = catCases.find(c => c.id === activeLightboxCatId);
+    if (!cat) return;
+    const photos = getCatPhotos(cat);
+    activeLightboxIndex = (activeLightboxIndex + 1) % photos.length;
+    updateLightboxUI();
+  }
+
+  function prevLightbox() {
+    if (!activeLightboxCatId) return;
+    const cat = catCases.find(c => c.id === activeLightboxCatId);
+    if (!cat) return;
+    const photos = getCatPhotos(cat);
+    activeLightboxIndex = (activeLightboxIndex - 1 + photos.length) % photos.length;
+    updateLightboxUI();
+  }
+
+  // Atajos de teclado para el Lightbox
+  window.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('gallery-lightbox-modal');
+    if (modal && modal.classList.contains('open')) {
+      if (e.key === 'ArrowRight') nextLightbox();
+      if (e.key === 'ArrowLeft') prevLightbox();
+      if (e.key === 'Escape') closeLightbox();
+    }
+  });
 
   // ==========================================
   // EXPORTADOR DE HISTORIAS DE INSTAGRAM (CANVAS 1080x1920)
