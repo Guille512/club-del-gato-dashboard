@@ -1115,6 +1115,214 @@
       transform: translateY(-2px);
     }
 
+    /* BITÁCORA Y COMENTARIOS COMUNITARIOS */
+    .timeline-section {
+      margin-top: 24px;
+      margin-bottom: 24px;
+      padding-top: 18px;
+      border-top: 1.5px solid #edf2f7;
+    }
+    body.dark-theme .timeline-section {
+      border-top-color: #2d3748;
+    }
+
+    .timeline-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .timeline-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timeline-count-badge {
+      background: #edf2f7;
+      color: #4a5568;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    body.dark-theme .timeline-count-badge {
+      background: #2d3748;
+      color: #cbd5e0;
+    }
+
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 18px;
+    }
+
+    .timeline-list::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: #e2e8f0;
+      border-radius: 1px;
+    }
+    body.dark-theme .timeline-list::before {
+      background: #2d3748;
+    }
+
+    .timeline-item {
+      position: relative;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+    }
+    body.dark-theme .timeline-item {
+      background: #1a202c;
+      border-color: #2d3748;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -18px;
+      top: 12px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: white;
+      border: 2.5px solid #3182ce;
+      box-shadow: 0 0 0 2px #ebf8ff;
+    }
+    body.dark-theme .timeline-dot {
+      background: #1a202c;
+      box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .timeline-author-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 0.8rem;
+    }
+
+    .timeline-type-pill {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .timeline-type-MEDICO { background: #e6fffa; color: #234e52; border: 1px solid #b2f5ea; }
+    .timeline-type-AVISTAMIENTO { background: #feebc8; color: #742a2a; border: 1px solid #fbd38d; }
+    .timeline-type-ESTADO { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+    .timeline-type-APOYO { background: #faf5ff; color: #553c9a; border: 1px solid #e9d8fd; }
+
+    .timeline-date {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-body {
+      color: #4a5568;
+      line-height: 1.4;
+      font-size: 0.8rem;
+    }
+    body.dark-theme .timeline-body {
+      color: #cbd5e0;
+    }
+
+    /* FORMULARIO DE NUEVA ACTUALIZACIÓN */
+    .timeline-form {
+      background: #f7fafc;
+      border: 1.5px dashed #cbd5e0;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    body.dark-theme .timeline-form {
+      background: #171923;
+      border-color: #4a5568;
+    }
+
+    .timeline-form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .timeline-input {
+      padding: 7px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      background: white;
+      color: var(--dark);
+      font-family: inherit;
+    }
+    body.dark-theme .timeline-input {
+      background: #2d3748;
+      border-color: #4a5568;
+      color: #edf2f7;
+    }
+
+    .timeline-textarea {
+      width: 100%;
+      min-height: 55px;
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: inherit;
+      resize: vertical;
+      background: white;
+      color: var(--dark);
+    }
+    body.dark-theme .timeline-textarea {
+      background: #2d3748;
+      border-color: #4a5568;
+      color: #edf2f7;
+    }
+
+    .btn-timeline-submit {
+      background: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-timeline-submit:hover {
+      background: #2b6cb0;
+      transform: translateY(-1px);
+    }
+
     /* MODAL DE REPORTE */
     .modal-overlay {
       position: fixed;
@@ -2850,6 +3058,71 @@
 
       ${fundingHtml}
 
+      <!-- BITÁCORA Y COMENTARIOS COMUNITARIOS -->
+      ${(() => {
+        const updates = cat.updates || [];
+        const updatesCount = updates.length;
+        const savedAuthor = localStorage.getItem('red_michis_author_name') || '';
+
+        let listHtml = '';
+        if (updatesCount === 0) {
+          listHtml = `
+            <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.8rem; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed #cbd5e0; margin-bottom: 12px;">
+              🐾 Aún no hay novedades comunitarias.<br>Sé el primero en dejar un parte médico o aviso sobre <strong>${escapeHtml(cat.nombre)}</strong>.
+            </div>
+          `;
+        } else {
+          listHtml = `
+            <div class="timeline-list">
+              ${updates.map(upd => `
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-header">
+                    <div class="timeline-author-info">
+                      <span>${upd.emoji || '💬'}</span>
+                      <span>${escapeHtml(upd.autor)}</span>
+                      <span class="timeline-type-pill timeline-type-${upd.tipo}">${upd.tipo}</span>
+                    </div>
+                    <span class="timeline-date">${escapeHtml(upd.fecha)}</span>
+                  </div>
+                  <div class="timeline-body">${escapeHtml(upd.texto)}</div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="timeline-section" id="timeline-section-${cat.id}">
+            <div class="timeline-title-row">
+              <div class="timeline-title">
+                <span>💬</span> Bitácora y Novedades
+              </div>
+              <span class="timeline-count-badge">${updatesCount} actualización${updatesCount === 1 ? '' : 'es'}</span>
+            </div>
+
+            ${listHtml}
+
+            <!-- FORMULARIO PARA PUBLICAR ACTUALIZACIÓN -->
+            <form class="timeline-form" onsubmit="submitCatUpdate('${cat.id}', event)">
+              <div class="timeline-form-row">
+                <input type="text" class="timeline-input" id="upd-author-${cat.id}" placeholder="Tu nombre / Rol" value="${escapeHtml(savedAuthor)}" required style="flex: 1;">
+                <select class="timeline-input" id="upd-type-${cat.id}" style="width: 140px; font-weight: 700;">
+                  <option value="AVISTAMIENTO">🐾 Avistamiento</option>
+                  <option value="MEDICO">🩺 Parte Médico</option>
+                  <option value="ESTADO">🚑 Rescate / Estado</option>
+                  <option value="APOYO">💚 Apoyo / Tránsito</option>
+                </select>
+              </div>
+              <textarea class="timeline-textarea" id="upd-text-${cat.id}" placeholder="Escribí un parte médico, aviso o novedad comunitaria..." required></textarea>
+              <button type="submit" class="btn-timeline-submit">
+                <span>✍️</span> Publicar en Bitácora
+              </button>
+            </form>
+          </div>
+        `;
+      })()}
+
       <div class="case-actions">
         ${cat.estado === 'EMERGENCIA' || cat.estado === 'AVISTADO' ? `
           <button class="btn btn-rescue btn-full" onclick="markInRescue('${cat.id}')">
@@ -2878,6 +3151,59 @@
 
     sidebar.classList.add('open');
     mapInstance.panTo([cat.lat, cat.lng], { animate: true, duration: 0.5 });
+  }
+
+  function submitCatUpdate(catId, event) {
+    if (event) event.preventDefault();
+
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+
+    const authorInput = document.getElementById(`upd-author-${catId}`);
+    const typeInput = document.getElementById(`upd-type-${catId}`);
+    const textInput = document.getElementById(`upd-text-${catId}`);
+
+    const author = authorInput ? authorInput.value.trim() : '';
+    const tipo = typeInput ? typeInput.value : 'AVISTAMIENTO';
+    const texto = textInput ? textInput.value.trim() : '';
+
+    if (!author || !texto) {
+      showToast('⚠️ Por favor completá tu nombre y la novedad');
+      return;
+    }
+
+    localStorage.setItem('red_michis_author_name', author);
+
+    const typeEmojis = {
+      MEDICO: '🩺',
+      AVISTAMIENTO: '🐾',
+      ESTADO: '🚑',
+      APOYO: '💚'
+    };
+
+    if (!cat.updates) {
+      cat.updates = [];
+    }
+
+    const newUpdate = {
+      id: 'upd-' + Date.now(),
+      autor: author,
+      rol: tipo,
+      tipo: tipo,
+      emoji: typeEmojis[tipo] || '💬',
+      texto: texto,
+      fecha: 'Recién'
+    };
+
+    // Agregar al principio de la lista
+    cat.updates.unshift(newUpdate);
+
+    saveCases();
+    playSuccessChime();
+    showToast(`✨ Novedad registrada en la bitácora de ${cat.nombre}`);
+
+    // Re-renderizar la barra lateral
+    openSidebarWithCat(cat);
   }
 
   function closeSidebar() {
