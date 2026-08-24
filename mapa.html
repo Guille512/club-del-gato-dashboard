@@ -205,220 +205,335 @@
       background: #e9ecef;
     }
 
-    /* TOP BAR FLOTANTE */
-    .top-bar {
+    /* TOP NAVBAR FLOTANTE MODERNO Y ORGANIZADO */
+    .top-nav-card {
       position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
+      top: 14px;
+      left: 14px;
+      right: 14px;
       z-index: 1000;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       pointer-events: none;
     }
 
-    .top-bar-row {
+    .nav-main-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       pointer-events: auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+    body.dark-theme .nav-main-row {
+      background: rgba(15, 23, 42, 0.94);
+      border-color: #1e293b;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
-    .brand-badge {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      padding: 10px 18px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+    .nav-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      gap: 9px;
+      cursor: pointer;
+      flex-shrink: 0;
+      text-decoration: none;
     }
-
-    .brand-badge .logo {
-      font-size: 1.5rem;
+    .nav-logo {
+      font-size: 1.45rem;
       line-height: 1;
+      display: flex;
+      align-items: center;
     }
-
-    .brand-badge .brand-text h1 {
-      font-size: 1rem;
+    .nav-title {
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--dark);
       letter-spacing: -0.3px;
+      line-height: 1.15;
     }
-
-    .brand-badge .brand-text span {
-      font-size: 0.72rem;
+    .nav-subtitle {
+      font-size: 0.68rem;
       color: var(--text-muted);
       font-weight: 600;
     }
 
-    .quick-actions {
+    /* BUSCADOR INTEGRADO EN EL NAVBAR */
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+      margin: 0 6px;
+    }
+    .search-box {
       display: flex;
       align-items: center;
-      gap: 8px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 6px 12px;
+      transition: all 0.2s ease;
+    }
+    body.dark-theme .search-box {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .search-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.15);
+      background: white;
+    }
+    body.dark-theme .search-box:focus-within {
+      background: #0f172a;
+    }
+    .search-icon {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-right: 6px;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--dark);
+      background: transparent;
+    }
+    .search-input::placeholder {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .search-clear {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .search-clear:hover { color: #e53e3e; }
+    .search-shortcut-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #64748b;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    body.dark-theme .search-shortcut-badge {
+      background: #334155;
+      color: #cbd5e1;
     }
 
-    .btn {
-      font-family: inherit;
+    /* DROPDOWN DE RESULTADOS */
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      border: 1.5px solid var(--border);
+      max-height: 380px;
+      overflow-y: auto;
+      z-index: 1100;
+      padding: 6px;
+    }
+    body.dark-theme .search-dropdown {
+      background: #0f172a;
+      border-color: #1e293b;
+    }
+
+    /* BOTONES DE ACCIÓN DE LA BARRA */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border-radius: var(--radius-lg);
-      font-size: 0.85rem;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-md);
-      pointer-events: auto;
-      text-decoration: none;
+      gap: 5px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    body.dark-theme .nav-btn {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+    .nav-btn:hover {
+      background: white;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    body.dark-theme .nav-btn:hover {
+      background: #27354f;
+    }
+    .nav-btn.active {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
     }
 
-    .btn-primary {
+    .btn-primary.nav-cta-btn {
       background: var(--primary);
       color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3);
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
-    .btn-primary:hover {
+    .btn-primary.nav-cta-btn:hover {
       background: var(--primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(255, 107, 74, 0.35);
+      box-shadow: 0 6px 16px rgba(255, 107, 74, 0.45);
     }
 
-    .btn-white {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      color: var(--dark);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-    }
-    .btn-white:hover {
-      background: white;
-      transform: translateY(-1px);
-    }
-
-    /* FILTROS FLOTANTES Y ANIMACIONES */
-    .filter-section-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      pointer-events: auto;
-    }
-
-    .filter-chips {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 2px 4px;
-      pointer-events: auto;
-      scrollbar-width: none;
-    }
-    .filter-chips::-webkit-scrollbar { display: none; }
-
-    .filter-chips-barrios {
+    /* ESTANTERÍA DE FILTROS EN LÍNEA ÚNICA */
+    .filter-shelf {
       display: flex;
       align-items: center;
       gap: 6px;
       overflow-x: auto;
-      padding: 2px 2px 4px;
+      padding: 6px 10px;
       pointer-events: auto;
       scrollbar-width: none;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
-    .filter-chips-barrios::-webkit-scrollbar { display: none; }
+    body.dark-theme .filter-shelf {
+      background: rgba(15, 23, 42, 0.92);
+      border-color: #1e293b;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+    .filter-shelf::-webkit-scrollbar { display: none; }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .filter-separator {
+      width: 1.5px;
+      height: 18px;
+      background: #cbd5e1;
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+    body.dark-theme .filter-separator {
+      background: #334155;
+    }
 
     .chip {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      padding: 8px 14px;
-      border-radius: var(--radius-lg);
-      font-size: 0.78rem;
+      background: white;
+      padding: 5px 11px;
+      border-radius: 16px;
+      font-size: 0.74rem;
       font-weight: 700;
       color: var(--text);
       cursor: pointer;
       white-space: nowrap;
-      border: 1.5px solid rgba(226, 232, 240, 0.8);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-      display: flex;
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.2s ease;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       user-select: none;
-      position: relative;
+      font-family: inherit;
     }
-
+    body.dark-theme .chip {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
     .chip:hover {
-      background: white;
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: var(--shadow-md);
-      border-color: rgba(255, 107, 74, 0.3);
+      border-color: var(--primary);
+      transform: translateY(-1px);
     }
-
-    .chip:active {
-      transform: scale(0.96);
-    }
-
     .chip.active {
       background: var(--dark);
       color: white;
       border-color: var(--dark);
-      box-shadow: 0 4px 14px rgba(18, 24, 38, 0.35);
-      animation: chipPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-
-    /* CHIP DE EMERGENCIA ESPECIAL CON HALO */
+    body.dark-theme .chip.active {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #f8fafc;
+    }
     .chip[data-filter="EMERGENCIA"] {
-      border-color: rgba(229, 62, 62, 0.3);
       color: var(--color-emergencia);
-    }
-    .chip[data-filter="EMERGENCIA"]:hover {
-      border-color: var(--color-emergencia);
+      border-color: rgba(229, 62, 62, 0.3);
     }
     .chip[data-filter="EMERGENCIA"].active {
       background: var(--color-emergencia);
       color: white;
       border-color: var(--color-emergencia);
-      box-shadow: 0 4px 18px rgba(229, 62, 62, 0.45);
-      animation: emergencyPulse 1.8s infinite;
     }
 
-    /* CHIPS DE BARRIOS (ESTILO SECUNDARIO SUTIL) */
     .chip-barrio {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(8px);
-      padding: 6px 12px;
-      border-radius: var(--radius-md);
-      font-size: 0.73rem;
+      background: transparent;
+      padding: 5px 10px;
+      border-radius: 14px;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
-      border: 1px solid rgba(226, 232, 240, 0.7);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      border: 1px solid transparent;
       transition: all 0.2s ease;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+      font-family: inherit;
     }
-
     .chip-barrio:hover {
-      background: white;
+      background: rgba(0,0,0,0.04);
       color: var(--dark);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
     }
-
+    body.dark-theme .chip-barrio:hover {
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
     .chip-barrio.active {
       background: #3182ce;
       color: white;
-      border-color: #3182ce;
       font-weight: 700;
-      box-shadow: 0 3px 10px rgba(49, 130, 206, 0.35);
-      animation: chipPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-color: #3182ce;
     }
 
     .chip-reset {
@@ -434,130 +549,69 @@
 
     .chip .count, .chip-barrio .count {
       background: rgba(0,0,0,0.06);
-      padding: 2px 6px;
+      padding: 1px 5px;
       border-radius: 10px;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      transition: all 0.2s ease;
+    }
+    body.dark-theme .chip .count, body.dark-theme .chip-barrio .count {
+      background: rgba(255,255,255,0.12);
     }
     .chip.active .count, .chip-barrio.active .count {
-      background: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.3);
       color: white;
+    }
+    body.dark-theme .chip.active .count {
+      background: rgba(0,0,0,0.15);
+      color: #0f172a;
     }
 
     /* BANNER FLOTANTE DE RESULTADOS */
     .filter-summary-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(18, 24, 38, 0.88);
-      backdrop-filter: blur(10px);
+      gap: 6px;
+      background: var(--dark);
       color: white;
-      font-size: 0.73rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 5px 12px;
-      border-radius: 20px;
-      box-shadow: var(--shadow-sm);
-      align-self: flex-start;
-      animation: filterFadeIn 0.3s ease;
+      padding: 4px 10px;
+      border-radius: 14px;
+      white-space: nowrap;
     }
     .filter-summary-badge .badge-clear {
       cursor: pointer;
       color: #fc8181;
-      margin-left: 4px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
-    .filter-summary-badge .badge-clear:hover {
-      color: #feb2b2;
-    }
+    .filter-summary-badge .badge-clear:hover { color: #feb2b2; }
 
-    /* KEYFRAMES DE ANIMACIÓN */
-    @keyframes chipPop {
-      0% { transform: scale(0.92); }
-      50% { transform: scale(1.06); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes emergencyPulse {
-      0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6); }
-      70% { box-shadow: 0 0 0 10px rgba(229, 62, 62, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
-    }
-
-    @keyframes filterFadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* BARRA DE BÚSQUEDA EN TIEMPO REAL */
-    .search-container {
-      position: relative;
-      width: 100%;
-      margin: 8px 0 4px 0;
-      z-index: 1001;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: white;
-      border: 1.5px solid #cbd5e0;
-      border-radius: var(--radius-md);
-      padding: 7px 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .search-box:focus-within {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.18), 0 4px 12px rgba(0,0,0,0.08);
-      background: #fffdfc;
-    }
-
-    .search-icon {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-right: 8px;
-      user-select: none;
-    }
-
-    .search-input {
-      flex: 1;
-      border: none;
-      outline: none;
+    /* BOTONES GLOBALES */
+    .btn {
       font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: var(--dark);
-      background: transparent;
-    }
-
-    .search-input::placeholder {
-      color: #a0aec0;
-      font-weight: 500;
-    }
-
-    .search-clear {
-      background: transparent;
-      border: none;
-      font-size: 1.1rem;
-      color: #a0aec0;
-      cursor: pointer;
-      padding: 0 4px;
-      transition: color 0.15s ease;
-      line-height: 1;
-    }
-
-    .search-clear:hover {
-      color: #e53e3e;
-    }
-
-    .search-shortcut-badge {
-      font-size: 0.65rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-lg);
+      font-size: 0.85rem;
       font-weight: 700;
-      background: #edf2f7;
-      color: #718096;
-      padding: 2px 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-white {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      color: var(--dark);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
       border-radius: 4px;
       border: 1px solid #cbd5e0;
       margin-left: 6px;
@@ -2236,11 +2290,15 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* RESPONSIVE MÓVIL */
+    /* RESPONSIVE MÓVIL Y TABLET */
+    @media (max-width: 960px) {
+      .nav-btn-text, .nav-subtitle { display: none; }
+      .search-container { max-width: 260px; }
+    }
     @media (max-width: 768px) {
       .sidebar {
         width: 100vw;
-        height: 70vh;
+        height: 72vh;
         top: auto;
         bottom: 0;
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -2249,10 +2307,16 @@
       .sidebar.open {
         transform: translateY(0);
       }
-      .brand-badge .brand-text span { display: none; }
-      .top-bar { top: 10px; left: 10px; right: 10px; }
-      .bottom-controls { bottom: 16px; left: 16px; }
-      .btn { padding: 8px 14px; font-size: 0.8rem; }
+      .top-nav-card { top: 8px; left: 8px; right: 8px; gap: 6px; }
+      .nav-main-row { padding: 6px 10px; gap: 8px; }
+      .nav-title { font-size: 0.85rem; }
+      .search-container { max-width: 150px; }
+      .search-shortcut-badge { display: none; }
+      .nav-actions { gap: 4px; }
+      .nav-btn { padding: 5px 8px; font-size: 0.72rem; }
+      .nav-cta-text { display: none; }
+      .filter-shelf { padding: 4px 6px; }
+      .bottom-controls { bottom: 14px; left: 14px; }
     }
   </style>
 </head>
@@ -2262,63 +2326,62 @@
   <!-- MAPA LEAFLET -->
   <div id="map"></div>
 
-  <!-- TOP BAR CON FILTROS Y ACCIONES -->
-  <div class="top-bar">
-    <div class="top-bar-row">
-      <div class="brand-badge">
-        <span class="logo">🐱</span>
-        <div class="brand-text">
-          <h1>Red Michis Córdoba</h1>
-          <span>Logística de Rescate y Tránsito</span>
+  <!-- TOP BAR CON HEADER Y FILTROS INTEGRADOS -->
+  <header class="top-nav-card">
+    <div class="nav-main-row">
+      <!-- MARCA / LOGO -->
+      <div class="nav-brand" onclick="resetAllFilters()" title="Red Michis Córdoba">
+        <span class="nav-logo">🐱</span>
+        <div class="nav-brand-text">
+          <div class="nav-title">Red Michis Córdoba</div>
+          <div class="nav-subtitle">Logística & Rescate Solidario</div>
         </div>
       </div>
 
-        <button class="btn btn-secondary" id="btn-heat-toggle" onclick="toggleHeatmap()" title="Activar/Desactivar mapa de calor y alertas de zonas críticas">
-          🔥 Zonas Críticas: OFF
+      <!-- BUSCADOR CENTRAL INTEGRADO -->
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar michi, rescatista o barrio... (Ctrl+K)" autocomplete="off" oninput="handleSearchInput(this.value)" onfocus="handleSearchFocus()" onkeydown="handleSearchKeydown(event)">
+          <button id="search-clear-btn" class="search-clear" onclick="clearSearch()" style="display: none;" title="Limpiar búsqueda">&times;</button>
+          <span class="search-shortcut-badge">Ctrl K</span>
+        </div>
+        <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+      </div>
+
+      <!-- ACCIONES PRINCIPALES Y BOTONES -->
+      <div class="nav-actions">
+        <button class="nav-btn" id="btn-heat-toggle" onclick="toggleHeatmap()" title="Mapa de calor y zonas críticas">
+          🔥 <span class="nav-btn-text">Zonas Críticas</span>
         </button>
-        <button class="btn btn-secondary" id="btn-locate-user" onclick="locateUser()" title="Detectar mi ubicación GPS y calcular distancias a cada michi">
-          📍 Mi Ubicación
+        <button class="nav-btn" id="btn-locate-user" onclick="locateUser()" title="Mi ubicación GPS">
+          📍 <span class="nav-btn-text">Mi Ubicación</span>
         </button>
-        <button class="btn btn-secondary" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar modo oscuro / claro">
-          🌙 Modo Noche
+        <button class="nav-btn" id="btn-theme-toggle" onclick="toggleTheme()" title="Modo Oscuro / Claro">
+          🌙
         </button>
-        <button class="btn btn-secondary" onclick="openRescuersModal()" title="Muro de honor y reconocimientos a rescatistas de Córdoba">
-          🏅 Rescatistas
+        <button class="nav-btn" onclick="openStatsModal()" title="Estadísticas en vivo">
+          📊 <span class="nav-btn-text">Métricas</span>
         </button>
-        <button class="btn btn-secondary" onclick="openStatsModal()" title="Ver estadísticas en vivo de rescates en Córdoba">
-          📊 Estadísticas
+        <button class="nav-btn" onclick="openRescuersModal()" title="Muro de honor de rescatistas">
+          🏅 <span class="nav-btn-text">Rescatistas</span>
         </button>
-        <button class="btn btn-secondary" onclick="openExportModal()" title="Descargar planilla Excel (CSV) o dossier PDF de casos">
-          📥 Exportar
+        <button class="nav-btn" onclick="openExportModal()" title="Exportar datos (Excel / PDF)">
+          📥
         </button>
-        <button class="btn btn-secondary" id="btn-sound-toggle" onclick="toggleSound()" title="Activar/Desactivar maullidos y efectos de sonido">
-          🔊 Sonido: ON
+        <button class="nav-btn" id="btn-sound-toggle" onclick="toggleSound()" title="Sonidos / Maullidos">
+          🔊
         </button>
-        <button class="btn btn-primary" onclick="openReportModal()">
-          <span>➕</span> Reportar Michi
+        <button class="btn btn-primary nav-cta-btn" onclick="openReportModal()">
+          <span>➕</span> <span class="nav-cta-text">Reportar</span>
         </button>
       </div>
     </div>
 
-    <!-- BARRA DE BÚSQUEDA EN TIEMPO REAL -->
-    <div class="search-container">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" class="search-input" placeholder="Buscar michi por nombre, rescatista, barrio o descripción... (Ctrl+K o /)" autocomplete="off" oninput="handleSearchInput(this.value)" onfocus="handleSearchFocus()" onkeydown="handleSearchKeydown(event)">
-        <button id="search-clear-btn" class="search-clear" onclick="clearSearch()" style="display: none;" title="Limpiar búsqueda">&times;</button>
-        <span class="search-shortcut-badge">Ctrl K</span>
-      </div>
-
-      <!-- DROPDOWN DE RESULTADOS EN VIVO -->
-      <div id="search-dropdown" class="search-dropdown" style="display: none;">
-        <!-- Se inyecta dinámicamente -->
-      </div>
-    </div>
-
-    <!-- CONTENEDOR DE FILTROS FLOTANTES -->
-    <div class="filter-section-wrapper">
-      <!-- FILA 1: CHIPS DE FILTRO POR ESTADO DE URGENCIA -->
-      <div class="filter-chips" id="filter-chips-status">
+    <!-- FILA DE FILTROS EN LÍNEA ÚNICA -->
+    <div class="filter-shelf">
+      <!-- ESTADOS -->
+      <div class="filter-group" id="filter-chips-status">
         <button class="chip active" data-filter="ALL" onclick="applyFilter('ALL')">
           <span>🐾 Todos</span> <span class="count" id="count-all">0</span>
         </button>
@@ -2339,10 +2402,12 @@
         </button>
       </div>
 
-      <!-- FILA 2: CHIPS DE FILTRO RÁPIDO POR BARRIO DE CÓRDOBA -->
-      <div class="filter-chips-barrios" id="filter-chips-barrios">
+      <div class="filter-separator"></div>
+
+      <!-- BARRIOS -->
+      <div class="filter-group" id="filter-chips-barrios">
         <button class="chip-barrio active" data-barrio="ALL" onclick="applyBarrioFilter('ALL')">
-          <span>📍 Todos los Barrios</span> <span class="count" id="count-barrio-all">0</span>
+          <span>📍 Barrios</span> <span class="count" id="count-barrio-all">0</span>
         </button>
         <button class="chip-barrio" data-barrio="Nueva Córdoba" onclick="applyBarrioFilter('Nueva Córdoba')">
           <span>Nueva Córdoba</span> <span class="count" id="count-barrio-nueva-cordoba">0</span>
@@ -2354,31 +2419,31 @@
           <span>Alta Córdoba</span> <span class="count" id="count-barrio-alta-cordoba">0</span>
         </button>
         <button class="chip-barrio" data-barrio="Güemes" onclick="applyBarrioFilter('Güemes')">
-          <span>Güemes / Observatorio</span> <span class="count" id="count-barrio-guemes">0</span>
+          <span>Güemes</span> <span class="count" id="count-barrio-guemes">0</span>
         </button>
         <button class="chip-barrio" data-barrio="San Vicente" onclick="applyBarrioFilter('San Vicente')">
           <span>San Vicente</span> <span class="count" id="count-barrio-san-vicente">0</span>
         </button>
         <button class="chip-barrio" data-barrio="Villa Belgrano" onclick="applyBarrioFilter('Villa Belgrano')">
-          <span>Villa Belgrano / Argüello</span> <span class="count" id="count-barrio-villa-belgrano">0</span>
+          <span>Villa Belgrano</span> <span class="count" id="count-barrio-villa-belgrano">0</span>
         </button>
-        <button class="chip-barrio" id="chip-sort-distance" style="display: none; background: #ebf8ff; color: #2b6cb0; border-color: #bee3f8;" onclick="toggleSortByDistance()" title="Ordenar michis por distancia desde mi ubicación actual">
+        <button class="chip-barrio" id="chip-sort-distance" style="display: none; background: #ebf8ff; color: #2b6cb0; border-color: #bee3f8;" onclick="toggleSortByDistance()" title="Ordenar por cercanía GPS">
           <span>⚡ Más Cercanos</span>
         </button>
         <button class="chip-barrio chip-reset" id="btn-reset-filters" style="display: none;" onclick="resetAllFilters()">
-          <span>🧹 Limpiar</span>
+          <span>✕ Limpiar</span>
         </button>
       </div>
 
-      <!-- INDICADOR ACTIVO DE FILTROS COMBINADOS -->
-      <div id="filter-summary-container" style="display: none;">
+      <!-- RESUMEN ACTIVO -->
+      <div id="filter-summary-container" style="display: none; margin-left: auto;">
         <div class="filter-summary-badge" id="filter-summary-text">
-          <span>✨ Mostrando 0 casos</span>
-          <span class="badge-clear" onclick="resetAllFilters()" title="Quitar todos los filtros">✕</span>
+          <span>✨ 0 casos</span>
+          <span class="badge-clear" onclick="resetAllFilters()" title="Quitar filtros">✕</span>
         </div>
       </div>
     </div>
-  </div>
+  </header>
 
   <!-- BOTONES INFERIORES -->
   <div class="bottom-controls">
@@ -2843,7 +2908,6 @@
       criticalZoneLabels.forEach(l => mapInstance.removeLayer(l));
       criticalZoneLabels = [];
       if (btn) {
-        btn.innerHTML = '🔥 Zonas Críticas: OFF';
         btn.classList.remove('active');
         btn.style.background = '';
         btn.style.color = '';
@@ -2853,7 +2917,6 @@
     }
 
     if (btn) {
-      btn.innerHTML = '🔥 Zonas Críticas: ON';
       btn.classList.add('active');
       btn.style.background = '#e53e3e';
       btn.style.color = 'white';
@@ -2952,7 +3015,7 @@
     }
 
     const btn = document.getElementById('btn-locate-user');
-    if (btn) btn.innerHTML = '🛰️ Buscando...';
+    if (btn) btn.innerHTML = '🛰️ <span class="nav-btn-text">Buscando...</span>';
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -2960,7 +3023,7 @@
         userLocation = { lat: latitude, lng: longitude, accuracy };
 
         if (btn) {
-          btn.innerHTML = '📍 Mi Ubicación: Activa';
+          btn.innerHTML = '📍 <span class="nav-btn-text">Mi Ubicación</span>';
           btn.classList.add('active');
           btn.style.background = '#3182ce';
           btn.style.color = 'white';
@@ -3018,7 +3081,7 @@
       },
       (err) => {
         if (btn) {
-          btn.innerHTML = '📍 Mi Ubicación';
+          btn.innerHTML = '📍 <span class="nav-btn-text">Mi Ubicación</span>';
           btn.style.background = '';
           btn.style.color = '';
         }
@@ -3094,7 +3157,7 @@
 
     const btn = document.getElementById('btn-theme-toggle');
     if (btn) {
-      btn.innerHTML = isDark ? '☀️ Modo Día' : '🌙 Modo Noche';
+      btn.innerHTML = isDark ? '☀️' : '🌙';
       btn.title = isDark ? 'Cambiar a modo diurno' : 'Cambiar a modo nocturno';
     }
 
@@ -4277,7 +4340,8 @@
   function updateSoundButton() {
     const btn = document.getElementById('btn-sound-toggle');
     if (btn) {
-      btn.innerHTML = soundEnabled ? '🔊 Sonido: ON' : '🔇 Sonido: OFF';
+      btn.innerHTML = soundEnabled ? '🔊' : '🔇';
+      btn.title = soundEnabled ? 'Sonido: Activado (Click para silenciar)' : 'Sonido: Silenciado (Click para activar)';
       btn.classList.toggle('muted', !soundEnabled);
     }
   }
