@@ -2564,6 +2564,99 @@
       gap: 4px;
     }
 
+    /* MODAL DE REGISTRO / MODO INVITADO Y BENEFICIOS */
+    .benefit-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .benefit-card {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 1.5px solid #fed7aa;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    body.dark-theme .benefit-card {
+      background: linear-gradient(135deg, rgba(255, 107, 74, 0.1) 0%, rgba(255, 107, 74, 0.2) 100%);
+      border-color: rgba(255, 107, 74, 0.3);
+    }
+    .benefit-card-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #9a3412;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    body.dark-theme .benefit-card-title {
+      color: #fdba74;
+    }
+    .benefit-card-desc {
+      font-size: 0.72rem;
+      color: #7c2d12;
+      line-height: 1.3;
+    }
+    body.dark-theme .benefit-card-desc {
+      color: #e2e8f0;
+    }
+    .cred-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px solid #f59e0b;
+      border-radius: var(--radius-md);
+      padding: 18px;
+      color: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .cred-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .cred-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #fef08a;
+      letter-spacing: 0.5px;
+    }
+    .cred-code {
+      font-size: 0.76rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+    .cred-name {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .cred-meta {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+    }
+    .cred-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f59e0b;
+      color: #78350f;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-top: 8px;
+    }
+
     /* CUSTOM PIN MARKERS */
     .custom-cat-pin {
       position: relative;
@@ -2726,6 +2819,9 @@
         </button>
         <button class="nav-btn" id="btn-vets-toggle" onclick="toggleVetGuardias()" title="Veterinarias de guardia 24hs y clínicas de urgencias en Córdoba">
           🏥 <span class="nav-btn-text">Guardias 24hs</span>
+        </button>
+        <button class="nav-btn" id="btn-user-profile" onclick="openAuthProfileModal()" title="Mi Perfil / Beneficios en Veterinarias y Pet Shops">
+          🎁 <span class="nav-btn-text" id="nav-user-text">Beneficios & Registro</span>
         </button>
         <button class="nav-btn" id="btn-sound-toggle" onclick="toggleSound()" title="Sonidos / Maullidos">
           🔊
@@ -2950,7 +3046,30 @@
           <input type="tel" class="form-input" id="form-whatsapp" placeholder="+549351..." required>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 10px;">
+        <!-- VERIFICACIÓN Y VINCULACIÓN SOCIAL (FACEBOOK / INSTAGRAM) -->
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0; font-size: 0.76rem; color: #1e293b;">
+              🌟 Vinculación Social (Insignias Club del Gato)
+            </label>
+            <span id="form-social-badge-status" style="font-size: 0.7rem; font-weight: 800; color: #64748b;">Opcional</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <input type="text" class="form-input" id="form-fb-user" placeholder="📘 Perfil FB (ej: dra.agustina)" style="font-size: 0.8rem; padding: 7px 10px;" oninput="validateSocialIdentity()">
+            </div>
+            <div>
+              <input type="text" class="form-input" id="form-ig-user" placeholder="📸 Instagram (ej: @michi_cba)" style="font-size: 0.8rem; padding: 7px 10px;" oninput="validateSocialIdentity()">
+            </div>
+          </div>
+
+          <div id="social-validation-feedback" style="font-size: 0.72rem; margin-top: 6px; color: #64748b;">
+            💡 Al ingresar tu usuario de Facebook o Instagram, sincronizamos automáticamente si sos <strong>Miembro Verificado</strong> o <strong>Top Fan</strong> en el grupo <em>Club del Gato</em>.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 6px;">
           📍 Publicar Alerta en el Mapa
         </button>
       </form>
@@ -3082,6 +3201,106 @@
 
       <div id="facebook-modal-content">
         <!-- Renderizado dinámico con renderFacebookPublishModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRO / MODO INVITADO Y BENEFICIOS -->
+  <div class="modal-overlay" id="auth-profile-modal" onclick="closeAuthProfileModal(event)">
+    <div class="modal-card modal-card-lg" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+            <span>🎁</span> Membresía Solidaria · Club del Gato
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+            Registrate gratis para desbloquear beneficios exclusivos o navegá en Modo Invitado
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeAuthProfileModal()">&times;</button>
+      </div>
+
+      <!-- TABS DE BENEFICIOS VS INVITADO -->
+      <div class="benefit-card-grid">
+        <div class="benefit-card">
+          <div class="benefit-card-title"><span>🏥</span> 20% OFF en Veterinarias</div>
+          <div class="benefit-card-desc">Descuentos en consultas, castraciones y cirugías en clínicas adheridas de Córdoba.</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-card-title"><span>🛍️</span> 15% OFF en Pet Shops</div>
+          <div class="benefit-card-desc">Ahorrá en alimentos premium (Royal Canin, ProPlan) y accesorios felinos.</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-card-title"><span>🌟</span> Insignia Verificada FB/IG</div>
+          <div class="benefit-card-desc">Tu perfil se destaca con insignias oficiales en el grupo y en la plataforma.</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-card-title"><span>🚑</span> Línea Directa de Urgencias</div>
+          <div class="benefit-card-desc">Prioridad en alertas de rescate y asesoramiento veterinario de guardia.</div>
+        </div>
+      </div>
+
+      <!-- FORMULARIO DE REGISTRO RÁPIDO -->
+      <div id="auth-form-container">
+        <form id="member-register-form" onsubmit="handleMemberRegister(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">Tu Nombre y Apellido</label>
+              <input type="text" class="form-input" id="reg-name" placeholder="Ej: Agustina Fernández" required>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">WhatsApp de Contacto</label>
+              <input type="tel" class="form-input" id="reg-whatsapp" placeholder="+54 9 351..." required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">Perfil Facebook o Instagram (Opcional)</label>
+              <input type="text" class="form-input" id="reg-social" placeholder="Ej: @agustina_vet o fb.com/agustina">
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">Tu Barrio en Córdoba</label>
+              <select class="form-select" id="reg-barrio">
+                <option value="Nueva Córdoba">Nueva Córdoba</option>
+                <option value="Alberdi">Alberdi</option>
+                <option value="Alta Córdoba">Alta Córdoba</option>
+                <option value="Güemes">Güemes / Observatorio</option>
+                <option value="San Vicente">San Vicente</option>
+                <option value="Villa Belgrano">Villa Belgrano / Argüello</option>
+                <option value="Otro Barrio">Otro Barrio de Córdoba</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 16px;">
+            <button type="submit" class="btn btn-primary" style="flex: 2; padding: 12px; font-weight: 900; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(255, 107, 74, 0.35);">
+              🎁 Registrarme y Obtener Credencial
+            </button>
+            <button type="button" class="btn btn-white" style="flex: 1; padding: 12px; font-weight: 700; font-size: 0.84rem;" onclick="continueAsGuest()">
+              👁️ Modo Invitado
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREDENCIAL DIGITAL DE SOCIO / BENEFICIOS -->
+  <div class="modal-overlay" id="member-credential-modal" onclick="closeMemberCredentialModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: #f59e0b; color: #78350f; padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 800;">
+            👑 Socio Club del Gato
+          </span>
+          <h3 style="font-size: 1.1rem; font-weight: 800; margin: 0;">Credencial Digital</h3>
+        </div>
+        <button class="close-btn" onclick="closeMemberCredentialModal()">&times;</button>
+      </div>
+
+      <div id="credential-modal-body">
+        <!-- Renderizado dinámico -->
       </div>
     </div>
   </div>
@@ -4385,6 +4604,172 @@
       });
     } catch (e) {
       console.warn('Fallback webhook:', e);
+    }
+  }
+
+  // ==========================================
+  // MEMBRESÍA SOLIDARIA & MODO INVITADO CON BENEFICIOS
+  // ==========================================
+  let currentUserProfile = JSON.parse(localStorage.getItem('red_michis_user_profile') || 'null');
+
+  function openAuthProfileModal() {
+    if (currentUserProfile) {
+      openMemberCredentialModal();
+      return;
+    }
+    document.getElementById('auth-profile-modal').classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeAuthProfileModal(e) {
+    if (e && e.target && e.target.id !== 'auth-profile-modal' && !e.target.classList.contains('close-btn')) {
+      return;
+    }
+    document.getElementById('auth-profile-modal').classList.remove('open');
+  }
+
+  function continueAsGuest() {
+    localStorage.setItem('red_michis_auth_mode', 'guest');
+    closeAuthProfileModal();
+    showToast('👁️ Continuando en Modo Invitado. Podés registrarte cuando quieras para obtener beneficios.');
+  }
+
+  function handleMemberRegister(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('reg-name').value.trim();
+    const whatsapp = document.getElementById('reg-whatsapp').value.trim();
+    const social = document.getElementById('reg-social').value.trim();
+    const barrio = document.getElementById('reg-barrio').value;
+
+    const memberCode = 'CDG-' + Math.floor(1000 + Math.random() * 9000);
+
+    const profile = {
+      nombre: name,
+      whatsapp: whatsapp,
+      social: social,
+      barrio: barrio,
+      memberCode: memberCode,
+      fechaRegistro: new Date().toLocaleDateString('es-AR'),
+      isVerified: true
+    };
+
+    currentUserProfile = profile;
+    localStorage.setItem('red_michis_user_profile', JSON.stringify(profile));
+    localStorage.setItem('red_michis_auth_mode', 'member');
+
+    // Auto-completar inputs de autor
+    localStorage.setItem('red_michis_author_name', name);
+    if (social) {
+      if (social.startsWith('@')) localStorage.setItem('red_michis_author_ig', social);
+      else localStorage.setItem('red_michis_author_fb', social);
+    }
+
+    closeAuthProfileModal();
+    updateUserAuthUI();
+    playRescueCelebration();
+    showToast(`🎉 ¡Bienvenido/a ${name}! Credencial y beneficios activados.`);
+    openMemberCredentialModal();
+  }
+
+  function openMemberCredentialModal() {
+    if (!currentUserProfile) return;
+
+    const modal = document.getElementById('member-credential-modal');
+    const body = document.getElementById('credential-modal-body');
+
+    body.innerHTML = `
+      <div class="cred-card">
+        <div class="cred-header">
+          <div class="cred-title">🐱 CLUB DEL GATO CÓRDOBA</div>
+          <div class="cred-code">${currentUserProfile.memberCode}</div>
+        </div>
+        <div class="cred-name">${escapeHtml(currentUserProfile.nombre)}</div>
+        <div class="cred-meta">📍 ${escapeHtml(currentUserProfile.barrio)} · Socio Activo desde ${currentUserProfile.fechaRegistro}</div>
+        <div class="cred-badge">
+          <span>🌟</span> Miembro Verificado Solidario
+        </div>
+      </div>
+
+      <!-- DESCUENTOS ACTIVOS EN CÓRDOBA -->
+      <div style="margin-bottom: 16px;">
+        <h4 style="font-size: 0.84rem; font-weight: 800; text-transform: uppercase; color: var(--dark); margin-bottom: 8px;">
+          🎟️ Tus Beneficios & Descuentos Activos
+        </h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.82rem; font-weight: 800; color: #1e293b;">🏥 20% OFF Consultas & Castraciones</div>
+              <div style="font-size: 0.72rem; color: #64748b;">Hospital Veterinario Córdoba & Centro Nueva Córdoba</div>
+            </div>
+            <span style="background: #dcfce7; color: #15803d; font-size: 0.74rem; font-weight: 900; padding: 3px 8px; border-radius: 6px;">ACTIVO</span>
+          </div>
+
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.82rem; font-weight: 800; color: #1e293b;">🛍️ 15% OFF Alimentos & Pet Shops</div>
+              <div style="font-size: 0.72rem; color: #64748b;">Red de Pet Shops Adheridos de Córdoba Capital</div>
+            </div>
+            <span style="background: #dcfce7; color: #15803d; font-size: 0.74rem; font-weight: 900; padding: 3px 8px; border-radius: 6px;">ACTIVO</span>
+          </div>
+
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.82rem; font-weight: 800; color: #1e293b;">🚑 Prioridad de Rescate 24hs</div>
+              <div style="font-size: 0.72rem; color: #64748b;">Atención preferencial en emergencias reportadas</div>
+            </div>
+            <span style="background: #dcfce7; color: #15803d; font-size: 0.74rem; font-weight: 900; padding: 3px 8px; border-radius: 6px;">ACTIVO</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary btn-full" onclick="closeMemberCredentialModal()">
+          ✨ Continuar al Mapa
+        </button>
+        <button class="btn btn-white" onclick="logoutMember()" style="color: #e53e3e;" title="Cerrar sesión y volver a modo invitado">
+          Salir
+        </button>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeMemberCredentialModal(e) {
+    if (e && e.target && e.target.id !== 'member-credential-modal' && !e.target.classList.contains('close-btn')) {
+      return;
+    }
+    document.getElementById('member-credential-modal').classList.remove('open');
+  }
+
+  function logoutMember() {
+    currentUserProfile = null;
+    localStorage.removeItem('red_michis_user_profile');
+    localStorage.setItem('red_michis_auth_mode', 'guest');
+    closeMemberCredentialModal();
+    updateUserAuthUI();
+    showToast('👋 Sesión cerrada. Navegando en Modo Invitado.');
+  }
+
+  function updateUserAuthUI() {
+    const userBtn = document.getElementById('btn-user-profile');
+    const userText = document.getElementById('nav-user-text');
+    if (!userBtn || !userText) return;
+
+    if (currentUserProfile) {
+      userText.textContent = `👑 ${currentUserProfile.nombre.split(' ')[0]}`;
+      userBtn.title = `Socio: ${currentUserProfile.nombre} (${currentUserProfile.memberCode}) - Click para ver beneficios`;
+      userBtn.style.background = '#fef3c7';
+      userBtn.style.color = '#92400e';
+      userBtn.style.borderColor = '#f59e0b';
+    } else {
+      userText.textContent = 'Beneficios & Registro';
+      userBtn.title = 'Registrate gratis para obtener beneficios en veterinarias y pet shops';
+      userBtn.style.background = '';
+      userBtn.style.color = '';
+      userBtn.style.borderColor = '';
     }
   }
 
@@ -6373,8 +6758,66 @@
       title: "Voluntario Verificado",
       desc: "Miembro confiable verificado de la Red Michis Córdoba.",
       color: "#16a34a"
+    },
+    {
+      id: "fb_verificado",
+      icon: "🌟",
+      title: "Verificado Club del Gato (FB)",
+      desc: "Perfil verificado oficialmente en el grupo de Facebook Club del Gato.",
+      color: "#1877f2"
+    },
+    {
+      id: "fb_top_fan",
+      icon: "💎",
+      title: "Comentarista Destacado FB",
+      desc: "Miembro hiperactivo con insignia Top Contributor en Facebook.",
+      color: "#7c3aed"
     }
   ];
+
+  // Base sincronizada de miembros del Grupo de Facebook Club del Gato
+  const FB_SYNCED_USERS = [
+    {
+      nombre: "Dra. Agustina (Noa Dental)",
+      isVerifiedFB: true,
+      isTopContributorFB: true,
+      commentsFB: 142,
+      badgeText: "🌟 Verificado Club del Gato · 💎 Top Fan FB"
+    },
+    {
+      nombre: "Camila V. (Estudiante UNC)",
+      isVerifiedFB: true,
+      isTopContributorFB: true,
+      commentsFB: 78,
+      badgeText: "🌟 Verificado FB · 💎 Comentarista Destacada"
+    },
+    {
+      nombre: "Martín (Hogar de Tránsito)",
+      isVerifiedFB: true,
+      isTopContributorFB: false,
+      commentsFB: 34,
+      badgeText: "🌟 Miembro Verificado Club del Gato"
+    },
+    {
+      nombre: "Sofía Proteccionista",
+      isVerifiedFB: true,
+      isTopContributorFB: true,
+      commentsFB: 95,
+      badgeText: "🌟 Verificado FB · 💎 Top Fan Club del Gato"
+    },
+    {
+      nombre: "Lucas M.",
+      isVerifiedFB: false,
+      isTopContributorFB: true,
+      commentsFB: 41,
+      badgeText: "💎 Comentarista Activo FB"
+    }
+  ];
+
+  function getFbUserSync(name = '') {
+    const clean = String(name).toLowerCase().trim();
+    return FB_SYNCED_USERS.find(u => u.nombre.toLowerCase().includes(clean) || clean.includes(u.nombre.toLowerCase()));
+  }
 
   function getRescuerEmoji(name = '') {
     const clean = String(name).toLowerCase();
@@ -6387,8 +6830,13 @@
 
   function getRescuerBadgePill(name = '') {
     const clean = String(name).toLowerCase();
+    const fbSync = getFbUserSync(name);
+
     if (clean.includes('dra') || clean.includes('agustina')) {
-      return '🩺 Médica Veterinaria · Guardiana Oro';
+      return '🩺 Médica Veterinaria · 🌟 Verificado FB';
+    }
+    if (fbSync) {
+      return fbSync.badgeText;
     }
     if (clean.includes('agrupacion') || clean.includes('red')) {
       return '🤝 Organización Verificada · 10+ Rescates';
@@ -6605,6 +7053,44 @@
     }
   }
 
+  function validateSocialIdentity() {
+    const fbInput = document.getElementById('form-fb-user');
+    const igInput = document.getElementById('form-ig-user');
+    const statusSpan = document.getElementById('form-social-badge-status');
+    const feedbackDiv = document.getElementById('social-validation-feedback');
+
+    const fbVal = fbInput ? fbInput.value.trim() : '';
+    const igVal = igInput ? igInput.value.trim() : '';
+
+    if (!fbVal && !igVal) {
+      if (statusSpan) { statusSpan.textContent = 'Opcional'; statusSpan.style.color = '#64748b'; }
+      if (feedbackDiv) { feedbackDiv.innerHTML = '💡 Al ingresar tu usuario de Facebook o Instagram, sincronizamos automáticamente si sos <strong>Miembro Verificado</strong> o <strong>Top Fan</strong> en el grupo <em>Club del Gato</em>.'; feedbackDiv.style.color = '#64748b'; }
+      return;
+    }
+
+    const syncMatch = getFbUserSync(fbVal) || getFbUserSync(igVal);
+
+    if (syncMatch) {
+      if (statusSpan) {
+        statusSpan.textContent = '🌟 VERIFICADO';
+        statusSpan.style.color = '#15803d';
+      }
+      if (feedbackDiv) {
+        feedbackDiv.innerHTML = `✅ <strong>¡Perfil Detectado!</strong> ${syncMatch.nombre} (${syncMatch.badgeText}) · Sincronizado con Club del Gato.`;
+        feedbackDiv.style.color = '#15803d';
+      }
+    } else {
+      if (statusSpan) {
+        statusSpan.textContent = 'Vinculado';
+        statusSpan.style.color = '#1877f2';
+      }
+      if (feedbackDiv) {
+        feedbackDiv.innerHTML = `🔗 Perfil vinculado como voluntario oficial. Aparecerás como <strong>${escapeHtml(fbVal || igVal)}</strong> en el reporte.`;
+        feedbackDiv.style.color = '#1877f2';
+      }
+    }
+  }
+
   function handleReportSubmit(e) {
     e.preventDefault();
 
@@ -6616,6 +7102,18 @@
     const foto = document.getElementById('form-foto').value.trim() || 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80';
     const desc = document.getElementById('form-desc').value.trim();
     const whatsapp = document.getElementById('form-whatsapp').value.trim();
+    const fbUser = document.getElementById('form-fb-user') ? document.getElementById('form-fb-user').value.trim() : '';
+    const igUser = document.getElementById('form-ig-user') ? document.getElementById('form-ig-user').value.trim() : '';
+
+    let reportadoPor = 'Reporte Comunitario';
+    if (fbUser) {
+      const syncMatch = getFbUserSync(fbUser);
+      reportadoPor = syncMatch ? syncMatch.nombre : fbUser;
+      localStorage.setItem('red_michis_author_fb', fbUser);
+    } else if (igUser) {
+      reportadoPor = igUser.startsWith('@') ? igUser : `@${igUser}`;
+      localStorage.setItem('red_michis_author_ig', reportadoPor);
+    }
 
     const newCase = {
       id: "cat-" + Date.now(),
@@ -6641,11 +7139,11 @@
       whatsapp: whatsapp,
       deudaVet: estado === 'EMERGENCIA' ? 25000 : 0,
       recaudado: 0,
-      reportadoPor: "Reporte Comunitario",
+      reportadoPor: reportadoPor,
       fecha: "Recién",
       updates: [
         {
-          autor: "Sistema",
+          autor: reportadoPor,
           fecha: "Recién",
           tipo: "AVISTAMIENTO",
           emoji: "🐾",
@@ -6692,6 +7190,7 @@
   // Inicializar al cargar el DOM
   document.addEventListener('DOMContentLoaded', () => {
     updateSoundButton();
+    updateUserAuthUI();
     loadCases();
     initMap();
     checkActiveEmergencies();
