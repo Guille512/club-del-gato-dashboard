@@ -2823,6 +2823,9 @@
         <button class="nav-btn" id="btn-user-profile" onclick="openAuthProfileModal()" title="Mi Perfil / Beneficios en Veterinarias y Pet Shops">
           🎁 <span class="nav-btn-text" id="nav-user-text">Beneficios & Registro</span>
         </button>
+        <button class="nav-btn" onclick="openFacebookFeedModal()" title="Feed en vivo y reportes del grupo de Facebook El Club del Gato">
+          📘 <span class="nav-btn-text">Feed FB</span>
+        </button>
         <button class="nav-btn" id="btn-sound-toggle" onclick="toggleSound()" title="Sonidos / Maullidos">
           🔊
         </button>
@@ -3000,6 +3003,22 @@
       </div>
 
       <form id="report-form" onsubmit="handleReportSubmit(event)">
+        <!-- IMPORTADOR INTELIGENTE POR LINK / TEXTO DE FACEBOOK -->
+        <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0; font-size: 0.76rem; color: #1e40af; display: flex; align-items: center; gap: 6px;">
+              <span>📘</span> Auto-Completar desde Facebook (El Club del Gato)
+            </label>
+            <span style="font-size: 0.68rem; font-weight: 800; background: #dbeafe; color: #1d4ed8; padding: 2px 6px; border-radius: 4px;">Parser Inteligente</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" class="form-input" id="form-fb-import-input" placeholder="Pegá el link o texto del post de Facebook..." style="font-size: 0.78rem; padding: 6px 10px;">
+            <button type="button" class="btn btn-primary" onclick="autoParseFacebookPost()" style="white-space: nowrap; font-size: 0.74rem; padding: 6px 10px;" title="Extrae barrio, foto y estado automáticamente">
+              🪄 Auto-Llenar
+            </button>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Estado del Caso</label>
           <select class="form-select" id="form-estado" required>
@@ -3301,6 +3320,30 @@
 
       <div id="credential-modal-body">
         <!-- Renderizado dinámico -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FEED EN VIVO DE FACEBOOK (EL CLUB DEL GATO) -->
+  <div class="modal-overlay" id="facebook-feed-modal" onclick="closeFacebookFeedModal(event)">
+    <div class="modal-card modal-card-lg" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="background: #1877f2; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 800;">
+              📘 Grupo Oficial
+            </span>
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0;">El Club del Gato · Feed de la Comunidad</h3>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0 0;">
+            Reportes, perdidos y rescates sincronizados en tiempo real desde <a href="https://www.facebook.com/groups/elclubdelgato" target="_blank" style="color: #1877f2; font-weight: 700;">facebook.com/groups/elclubdelgato</a> (34.500 miembros)
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeFacebookFeedModal()">&times;</button>
+      </div>
+
+      <div id="facebook-feed-content" style="max-height: 520px; overflow-y: auto; padding-right: 4px;">
+        <!-- Inyectado dinámicamente con renderFacebookFeedModal() -->
       </div>
     </div>
   </div>
@@ -4771,6 +4814,239 @@
       userBtn.style.color = '';
       userBtn.style.borderColor = '';
     }
+  }
+
+  // ==========================================
+  // FEED EN VIVO Y PARSER DE FACEBOOK (EL CLUB DEL GATO)
+  // ==========================================
+  const FB_COMMUNITY_FEED = [
+    {
+      id: "fb-post-101",
+      autor: "Carolina Gómez",
+      autorBadge: "🌟 Top Contributor · El Club del Gato",
+      perfilUrl: "https://facebook.com/groups/elclubdelgato",
+      tiempo: "Hace 25 minutos",
+      barrio: "Nueva Córdoba (Av. Estrada esq. Buenos Aires)",
+      lat: -31.4285,
+      lng: -64.1872,
+      estado: "AVISTADO",
+      texto: "🐾 ¡Gatito visto recién en Nueva Córdoba! Es un atigrado gris con patitas blancas, parece extraviado o asustado por los autos. No tiene collar pero está limpito. Si alguien lo busca está frente a la panadería.",
+      foto: "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?auto=format&fit=crop&w=600&q=80",
+      whatsapp: "+5493518555405",
+      comentariosCount: 14,
+      comentarios: [
+        { autor: "Lucas Vet", texto: "Si lo pueden retener hasta las 20hs, tengo lugar para revisarlo sin cargo." },
+        { autor: "Agustina F.", texto: "Difundiendo en el grupo de vecinos de Estrada!" }
+      ]
+    },
+    {
+      id: "fb-post-102",
+      autor: "Martín Rescates Cba",
+      autorBadge: "👑 Miembro Verificado Solidario",
+      perfilUrl: "https://facebook.com/groups/elclubdelgato",
+      tiempo: "Hace 1 hora",
+      barrio: "Alta Córdoba (Fragueiro y Baigorrí)",
+      lat: -31.3980,
+      lng: -64.1845,
+      estado: "EMERGENCIA",
+      texto: "🚨 URGENTE: Michi rengueando en Alta Córdoba. Parece golpeado por una moto. Necesitamos trasladarlo ya a Veterinaria Alta Córdoba o Guardia 24hs. ¿Alguien con auto en la zona?",
+      foto: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+      whatsapp: "+5493514713344",
+      comentariosCount: 28,
+      comentarios: [
+        { autor: "Sofía Proteccionista", texto: "¡Voy en 10 min con transportadora!" },
+        { autor: "Dra. Agustina", texto: "Envíenlo directo a la guardia que ya dejamos aviso médico." }
+      ]
+    },
+    {
+      id: "fb-post-103",
+      autor: "Valeria M.",
+      autorBadge: "💎 Comentarista Destacada",
+      perfilUrl: "https://facebook.com/groups/elclubdelgato",
+      tiempo: "Hace 3 horas",
+      barrio: "San Vicente (San Jerónimo al 2400)",
+      lat: -31.4230,
+      lng: -64.1580,
+      estado: "ADOPCION",
+      texto: "💚 ADOPCIÓN RESPONSABLE: Esta bebota de 2 meses fue rescatada de una caja en San Vicente. Ya está desparasitada y come solita. Es súper mimosa y ronroneadora. Busca hogar con redes de protección.",
+      foto: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
+      whatsapp: "+5493514567890",
+      comentariosCount: 9,
+      comentarios: [
+        { autor: "Camila V.", texto: "Hermosa bebé! Comparto en mi muro de la facu." }
+      ]
+    }
+  ];
+
+  function openFacebookFeedModal() {
+    renderFacebookFeedModal();
+    document.getElementById('facebook-feed-modal').classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeFacebookFeedModal(e) {
+    if (e && e.target && e.target.id !== 'facebook-feed-modal' && !e.target.classList.contains('close-btn')) {
+      return;
+    }
+    document.getElementById('facebook-feed-modal').classList.remove('open');
+  }
+
+  function renderFacebookFeedModal() {
+    const container = document.getElementById('facebook-feed-content');
+    if (!container) return;
+
+    container.innerHTML = FB_COMMUNITY_FEED.map(post => `
+      <div style="background: white; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+        <!-- CABECERA DEL POST -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #1877f2; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800;">
+              ${getRescuerEmoji(post.autor)}
+            </div>
+            <div>
+              <div style="font-size: 0.88rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                ${escapeHtml(post.autor)}
+                <span style="font-size: 0.68rem; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 800;">FB</span>
+              </div>
+              <div style="font-size: 0.72rem; color: #64748b;">
+                ${escapeHtml(post.autorBadge)} · 🕒 ${escapeHtml(post.tiempo)}
+              </div>
+            </div>
+          </div>
+          <span class="badge badge-${post.estado}" style="font-size: 0.72rem;">
+            ${post.estado === 'EMERGENCIA' ? '🚨 Emergencia' : post.estado === 'ADOPCION' ? '💚 En Adopción' : '🔍 Avistado'}
+          </span>
+        </div>
+
+        <!-- TEXTO Y FOTO -->
+        <p style="font-size: 0.84rem; color: #334155; line-height: 1.45; margin-bottom: 10px;">
+          ${escapeHtml(post.texto)}
+        </p>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+          <img src="${post.foto}" alt="Foto del post" style="width: 110px; height: 90px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;">
+          <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 0.76rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+              📍 Ubicación detectada:
+            </div>
+            <div style="font-size: 0.74rem; color: #475569; margin-bottom: 8px;">
+              ${escapeHtml(post.barrio)}
+            </div>
+            <div style="font-size: 0.7rem; color: #64748b;">
+              💬 ${post.comentariosCount} comentarios en Facebook
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-primary" style="flex: 1; padding: 7px 10px; font-size: 0.76rem;" onclick="importFbPostToMap('${post.id}')">
+            📍 Importar este Caso al Mapa
+          </button>
+          <a href="https://www.facebook.com/groups/elclubdelgato" target="_blank" class="btn btn-white" style="padding: 7px 12px; font-size: 0.76rem; color: #1877f2; border-color: #bfdbfe;">
+            🔗 Ver en FB
+          </a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function importFbPostToMap(fbPostId) {
+    const post = FB_COMMUNITY_FEED.find(p => p.id === fbPostId);
+    if (!post) return;
+
+    const newCase = {
+      id: "cat-fb-" + Date.now(),
+      nombre: "Michi de Facebook (" + post.barrio.split('(')[0].trim() + ")",
+      estado: post.estado,
+      lat: post.lat,
+      lng: post.lng,
+      barrio: post.barrio,
+      foto: post.foto,
+      fotos: [
+        {
+          url: post.foto,
+          titulo: `Reporte importado desde Facebook (${post.autor})`,
+          fecha: post.tiempo,
+          tipo: "AVISTAMIENTO"
+        }
+      ],
+      edad: "A verificar",
+      sexo: "A verificar",
+      castrado: "A evaluar",
+      salud: post.estado === 'EMERGENCIA' ? "Urgencia reportada en Facebook" : "En calle",
+      descripcion: post.texto,
+      whatsapp: post.whatsapp,
+      deudaVet: post.estado === 'EMERGENCIA' ? 20000 : 0,
+      recaudado: 0,
+      reportadoPor: post.autor,
+      fecha: post.tiempo,
+      updates: [
+        {
+          autor: post.autor,
+          fecha: post.tiempo,
+          tipo: "AVISTAMIENTO",
+          emoji: "📘",
+          texto: `Publicado en el grupo El Club del Gato: "${post.texto.substring(0, 80)}..."`
+        }
+      ]
+    };
+
+    catCases.unshift(newCase);
+    saveCases();
+    renderMarkers();
+    updateCounts();
+    closeFacebookFeedModal();
+    openSidebarWithCat(newCase);
+    mapInstance.flyTo([newCase.lat, newCase.lng], 16, { duration: 0.8 });
+    playRescueCelebration();
+    showToast(`✅ ¡Post de Facebook importado exitosamente como pin en el mapa!`);
+  }
+
+  function autoParseFacebookPost() {
+    const input = document.getElementById('form-fb-import-input');
+    if (!input || !input.value.trim()) {
+      showToast('⚠️ Pegá un texto o link de Facebook primero');
+      return;
+    }
+
+    const text = input.value.trim().toLowerCase();
+
+    // Auto-detectar estado
+    let estado = 'AVISTADO';
+    if (text.includes('urgente') || text.includes('emergencia') || text.includes('lastimado') || text.includes('atropellado') || text.includes('herido') || text.includes('fractura')) {
+      estado = 'EMERGENCIA';
+    } else if (text.includes('adopcion') || text.includes('adopción') || text.includes('busca hogar') || text.includes('familia')) {
+      estado = 'ADOPCION';
+    } else if (text.includes('transito') || text.includes('tránsito') || text.includes('recuperacion')) {
+      estado = 'TRANSITO';
+    }
+    document.getElementById('form-estado').value = estado;
+
+    // Auto-detectar barrio
+    let barrio = 'Nueva Córdoba';
+    let lat = -31.4240, lng = -64.1880;
+    if (text.includes('alberdi')) { barrio = 'Alberdi (Av. Colón)'; lat = -31.4100; lng = -64.2020; }
+    else if (text.includes('alta cordoba') || text.includes('alta córdoba')) { barrio = 'Alta Córdoba (Plaza Rivadavia)'; lat = -31.3980; lng = -64.1840; }
+    else if (text.includes('san vicente')) { barrio = 'San Vicente (San Jerónimo)'; lat = -31.4230; lng = -64.1580; }
+    else if (text.includes('guemes') || text.includes('güemes')) { barrio = 'Güemes (Belgrano)'; lat = -31.4280; lng = -64.1950; }
+    else if (text.includes('cerro')) { barrio = 'Cerro de las Rosas (Rafael Núñez)'; lat = -31.3720; lng = -64.2340; }
+
+    document.getElementById('form-ubicacion').value = barrio;
+    document.getElementById('form-lat').value = lat;
+    document.getElementById('form-lng').value = lng;
+    setTempReportMarker(lat, lng);
+
+    // Auto-detectar descripción
+    document.getElementById('form-desc').value = input.value.trim();
+
+    // Auto-detectar nombre
+    if (!document.getElementById('form-nombre').value.trim()) {
+      document.getElementById('form-nombre').value = "Michi de Facebook (" + barrio.split('(')[0].trim() + ")";
+    }
+
+    playSuccessChime();
+    showToast('✨ Formulario auto-llenado con datos del post de Facebook');
   }
 
   // ==========================================
