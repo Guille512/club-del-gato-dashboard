@@ -663,6 +663,80 @@
       animation: pinEntrance 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
 
+    /* RADAR / UBICACIÓN DEL USUARIO */
+    .user-loc-icon-wrapper {
+      background: transparent;
+      border: none;
+    }
+
+    .user-loc-dot {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-loc-pulse {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(49, 130, 206, 0.45);
+      animation: userRadarPulse 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    .user-loc-center {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      background: #3182ce;
+      border: 2.5px solid white;
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(49, 130, 206, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @keyframes userRadarPulse {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
+
+    .user-radar-pulse {
+      animation: accuracyPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes accuracyPulse {
+      0%, 100% { fill-opacity: 0.12; }
+      50% { fill-opacity: 0.22; }
+    }
+
+    .distance-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #ebf8ff;
+      color: #2b6cb0;
+      border: 1px solid #bee3f8;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    body.dark-theme .distance-badge {
+      background: rgba(49, 130, 206, 0.2);
+      color: #90cdf4;
+      border-color: rgba(49, 130, 206, 0.4);
+    }
+
     /* ANIMACIÓN DE ZONA GEOGRÁFICA DE BARRIO */
     .barrio-highlight-zone {
       transition: all 0.5s ease;
@@ -1579,6 +1653,9 @@
       </div>
 
       <div class="quick-actions">
+        <button class="btn btn-secondary" id="btn-locate-user" onclick="locateUser()" title="Detectar mi ubicación GPS y calcular distancias a cada michi">
+          📍 Mi Ubicación
+        </button>
         <button class="btn btn-secondary" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar modo oscuro / claro">
           🌙 Modo Noche
         </button>
@@ -1661,6 +1738,9 @@
         </button>
         <button class="chip-barrio" data-barrio="Villa Belgrano" onclick="applyBarrioFilter('Villa Belgrano')">
           <span>Villa Belgrano / Argüello</span> <span class="count" id="count-barrio-villa-belgrano">0</span>
+        </button>
+        <button class="chip-barrio" id="chip-sort-distance" style="display: none; background: #ebf8ff; color: #2b6cb0; border-color: #bee3f8;" onclick="toggleSortByDistance()" title="Ordenar michis por distancia desde mi ubicación actual">
+          <span>⚡ Más Cercanos</span>
         </button>
         <button class="chip-barrio chip-reset" id="btn-reset-filters" style="display: none;" onclick="resetAllFilters()">
           <span>🧹 Limpiar</span>
@@ -1995,9 +2075,149 @@
   let markerClusterGroup = null;
   let activeStatusFilter = 'ALL';
   let activeBarrioFilter = 'ALL';
+  let sortByDistance = false;
   let catCases = [];
+  let userLocation = null; // { lat, lng, accuracy }
   let userLocationMarker = null;
+  let userAccuracyCircle = null;
   let tempReportMarker = null;
+
+  // ==========================================
+  // UTILIDADES DE DISTANCIA & GEOLOCALIZACIÓN (HAVERSINE)
+  // ==========================================
+  function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function formatDistance(km) {
+    if (km === null || km === undefined || isNaN(km)) return '';
+    if (km < 1) {
+      return `${Math.round(km * 1000)} m`;
+    }
+    return `${km.toFixed(1)} km`;
+  }
+
+  function locateUser() {
+    if (!navigator.geolocation) {
+      showToast('⚠️ Tu navegador no soporta geolocalización');
+      return;
+    }
+
+    const btn = document.getElementById('btn-locate-user');
+    if (btn) btn.innerHTML = '🛰️ Buscando...';
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        userLocation = { lat: latitude, lng: longitude, accuracy };
+
+        if (btn) {
+          btn.innerHTML = '📍 Mi Ubicación: Activa';
+          btn.classList.add('active');
+          btn.style.background = '#3182ce';
+          btn.style.color = 'white';
+        }
+
+        // Mostrar chip de ordenamiento por cercanía
+        const sortChip = document.getElementById('chip-sort-distance');
+        if (sortChip) sortChip.style.display = 'inline-flex';
+
+        // Remover capas previas de usuario si existían
+        if (userLocationMarker) mapInstance.removeLayer(userLocationMarker);
+        if (userAccuracyCircle) mapInstance.removeLayer(userAccuracyCircle);
+
+        // Pulso de precisión GPS
+        userAccuracyCircle = L.circle([latitude, longitude], {
+          radius: Math.min(accuracy || 120, 600),
+          color: '#3182ce',
+          fillColor: '#63b3ed',
+          fillOpacity: 0.14,
+          weight: 1.5,
+          className: 'user-radar-pulse'
+        }).addTo(mapInstance);
+
+        // Marcador con radar azul
+        const userIcon = L.divIcon({
+          className: 'user-loc-icon-wrapper',
+          html: `
+            <div class="user-loc-dot">
+              <div class="user-loc-pulse"></div>
+              <div class="user-loc-center">📍</div>
+            </div>
+          `,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+
+        userLocationMarker = L.marker([latitude, longitude], {
+          icon: userIcon,
+          zIndexOffset: 1000
+        }).addTo(mapInstance);
+
+        userLocationMarker.bindPopup(`
+          <div style="font-size: 0.84rem; font-weight: 800; text-align: center; padding: 4px;">
+            📍 Estás acá (Córdoba)<br>
+            <span style="font-size: 0.72rem; color: #718096; font-weight: 600;">Precisión GPS: ±${Math.round(accuracy)}m</span>
+          </div>
+        `);
+
+        // Volar a la posición del usuario
+        mapInstance.flyTo([latitude, longitude], 15, { duration: 0.9 });
+        playSuccessChime();
+        showToast(`📍 Ubicación fijada (±${Math.round(accuracy)}m). Calculando distancias...`);
+
+        renderMarkers(false);
+      },
+      (err) => {
+        if (btn) {
+          btn.innerHTML = '📍 Mi Ubicación';
+          btn.style.background = '';
+          btn.style.color = '';
+        }
+        console.warn('Error de geolocalización:', err);
+        showToast('⚠️ No se pudo acceder a tu ubicación GPS (revisá permisos)');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
+  function toggleSortByDistance() {
+    if (!userLocation) {
+      locateUser();
+      return;
+    }
+    sortByDistance = !sortByDistance;
+    const sortChip = document.getElementById('chip-sort-distance');
+    if (sortChip) {
+      sortChip.classList.toggle('active', sortByDistance);
+      if (sortByDistance) {
+        sortChip.style.background = '#3182ce';
+        sortChip.style.color = 'white';
+      } else {
+        sortChip.style.background = '#ebf8ff';
+        sortChip.style.color = '#2b6cb0';
+      }
+    }
+    renderMarkers(true);
+    showToast(sortByDistance ? '⚡ Michis ordenados por cercanía a tu posición' : '🐾 Orden restaurado');
+  }
+
+  function openDirections(catLat, catLng) {
+    if (userLocation) {
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${catLat},${catLng}&travelmode=driving`;
+      window.open(url, '_blank');
+    } else {
+      openGoogleMaps(catLat, catLng);
+    }
+  }
 
   // Cargar casos desde LocalStorage o fallback inicial
   function loadCases() {
@@ -2136,7 +2356,7 @@
   let selectedSearchIndex = -1;
 
   function getFilteredCases() {
-    return catCases.filter(cat => {
+    let list = catCases.filter(cat => {
       // 1. Filtro por estado
       const matchStatus = activeStatusFilter === 'ALL' || cat.estado === activeStatusFilter;
       // 2. Filtro por barrio
@@ -2154,6 +2374,17 @@
       }
       return matchStatus && matchBarrio && matchSearch;
     });
+
+    // Ordenamiento por cercanía geográfica si el usuario activó la geolocalización
+    if (sortByDistance && userLocation) {
+      list.sort((a, b) => {
+        const distA = calculateDistanceKm(userLocation.lat, userLocation.lng, a.lat, a.lng);
+        const distB = calculateDistanceKm(userLocation.lat, userLocation.lng, b.lat, b.lng);
+        return distA - distB;
+      });
+    }
+
+    return list;
   }
 
   function handleSearchInput(val) {
@@ -2183,14 +2414,23 @@
     }
 
     const q = searchQuery.toLowerCase().trim();
-    const matches = catCases.filter(cat => {
+    let matches = catCases.filter(cat => {
       const inNombre = (cat.nombre || '').toLowerCase().includes(q);
       const inBarrio = (cat.barrio || '').toLowerCase().includes(q);
       const inRescatista = (cat.reportadoPor || '').toLowerCase().includes(q);
       const inDesc = (cat.descripcion || '').toLowerCase().includes(q);
       return inNombre || inBarrio || inRescatista || inDesc;
-    }).slice(0, 6);
+    });
 
+    if (userLocation) {
+      matches.sort((a, b) => {
+        const dA = calculateDistanceKm(userLocation.lat, userLocation.lng, a.lat, a.lng);
+        const dB = calculateDistanceKm(userLocation.lat, userLocation.lng, b.lat, b.lng);
+        return dA - dB;
+      });
+    }
+
+    matches = matches.slice(0, 6);
     selectedSearchIndex = -1;
 
     if (matches.length === 0) {
@@ -2211,24 +2451,33 @@
       ADOPCION: '#38a169'
     };
 
-    dropdown.innerHTML = matches.map((cat, idx) => `
-      <div class="search-item" data-index="${idx}" onclick="selectSearchResult('${cat.id}')">
-        <img src="${cat.foto}" alt="${cat.nombre}" class="search-item-thumb" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=120&q=80'">
-        <div class="search-item-info">
-          <div class="search-item-title">
-            <span>${cat.nombre}</span>
-            <span class="search-item-badge" style="background: ${statusColors[cat.estado] || '#718096'};">
-              ${cat.estado.replace('_', ' ')}
-            </span>
+    dropdown.innerHTML = matches.map((cat, idx) => {
+      let distBadgeHtml = '';
+      if (userLocation) {
+        const d = calculateDistanceKm(userLocation.lat, userLocation.lng, cat.lat, cat.lng);
+        distBadgeHtml = `<span class="distance-badge" style="font-size:0.65rem; padding:1px 5px;">🚶 ${formatDistance(d)}</span>`;
+      }
+
+      return `
+        <div class="search-item" data-index="${idx}" onclick="selectSearchResult('${cat.id}')">
+          <img src="${cat.foto}" alt="${cat.nombre}" class="search-item-thumb" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=120&q=80'">
+          <div class="search-item-info">
+            <div class="search-item-title">
+              <span>${cat.nombre}</span>
+              <span class="search-item-badge" style="background: ${statusColors[cat.estado] || '#718096'};">
+                ${cat.estado.replace('_', ' ')}
+              </span>
+              ${distBadgeHtml}
+            </div>
+            <div class="search-item-meta">
+              <span>📍 ${cat.barrio.split('(')[0].trim()}</span>
+              <span>👤 ${cat.reportadoPor || 'Comunidad'}</span>
+            </div>
           </div>
-          <div class="search-item-meta">
-            <span>📍 ${cat.barrio.split('(')[0].trim()}</span>
-            <span>👤 ${cat.reportadoPor || 'Comunidad'}</span>
-          </div>
+          <div style="font-size: 0.9rem; color: var(--primary);">➔</div>
         </div>
-        <div style="font-size: 0.9rem; color: var(--primary);">➔</div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     dropdown.style.display = 'block';
   }
@@ -2313,6 +2562,20 @@
       marker.on('click', () => {
         openSidebarWithCat(cat);
       });
+
+      if (userLocation) {
+        const d = calculateDistanceKm(userLocation.lat, userLocation.lng, cat.lat, cat.lng);
+        marker.bindTooltip(`
+          <div style="font-size:0.78rem; text-align:center; padding:2px;">
+            <strong>${cat.nombre}</strong><br>
+            <span style="color:#2b6cb0; font-weight:800;">🚶 A ${formatDistance(d)} de vos</span>
+          </div>
+        `, {
+          direction: 'top',
+          offset: [0, -22],
+          opacity: 0.96
+        });
+      }
 
       markerClusterGroup.addLayer(marker);
     });
@@ -2509,6 +2772,19 @@
       `;
     }
 
+    let distBadge = '';
+    let directionsBtn = '';
+    if (userLocation) {
+      const distKm = calculateDistanceKm(userLocation.lat, userLocation.lng, cat.lat, cat.lng);
+      const distStr = formatDistance(distKm);
+      distBadge = `<span class="distance-badge" style="margin-left: 6px;">🚶 ${distStr} de vos</span>`;
+      directionsBtn = `
+        <button class="btn-gps btn-gps-gmaps" style="background:#2b6cb0; color:white; border-color:#2b6cb0;" onclick="openDirections(${cat.lat}, ${cat.lng})" title="Cómo llegar desde mi ubicación en Google Maps">
+          <span>🧭</span> Cómo llegar (${distStr})
+        </button>
+      `;
+    }
+
     content.innerHTML = `
       <div class="cat-img-wrapper">
         <img src="${cat.foto}" alt="${cat.nombre}" class="cat-profile-img" onclick="playMeowAudio('cute')" title="¡Hacé click para escucharme maullar!" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80'">
@@ -2522,7 +2798,7 @@
       </div>
 
       <h1 class="cat-title">${cat.nombre}</h1>
-      <div class="cat-location">📍 ${cat.barrio} · <em>${cat.fecha}</em></div>
+      <div class="cat-location">📍 ${cat.barrio} ${distBadge} · <em>${cat.fecha}</em></div>
 
       <div class="cat-traits-grid">
         <div class="trait-card">
@@ -2545,6 +2821,7 @@
         <div class="gps-header">
           <div class="gps-header-title">
             <span>📍 Coordenadas de Rescate</span>
+            ${distBadge}
           </div>
           <span class="gps-coords-badge">${cat.lat.toFixed(4)}, ${cat.lng.toFixed(4)}</span>
         </div>
@@ -2552,9 +2829,11 @@
           <button class="btn-gps btn-gps-copy" onclick="copyCoordinates(${cat.lat}, ${cat.lng})" title="Copiar latitud y longitud">
             <span>📋</span> Copiar GPS
           </button>
-          <button class="btn-gps btn-gps-gmaps" onclick="openGoogleMaps(${cat.lat}, ${cat.lng})" title="Abrir ubicación en Google Maps">
-            <span>🗺️</span> Google Maps
-          </button>
+          ${directionsBtn || `
+            <button class="btn-gps btn-gps-gmaps" onclick="openGoogleMaps(${cat.lat}, ${cat.lng})" title="Abrir ubicación en Google Maps">
+              <span>🗺️</span> Google Maps
+            </button>
+          `}
         </div>
       </div>
 
