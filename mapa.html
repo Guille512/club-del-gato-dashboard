@@ -1588,6 +1588,9 @@
         <button class="btn btn-secondary" onclick="openStatsModal()" title="Ver estadísticas en vivo de rescates en Córdoba">
           📊 Estadísticas
         </button>
+        <button class="btn btn-secondary" onclick="openExportModal()" title="Descargar planilla Excel (CSV) o dossier PDF de casos">
+          📥 Exportar
+        </button>
         <button class="btn btn-secondary" id="btn-sound-toggle" onclick="toggleSound()" title="Activar/Desactivar maullidos y efectos de sonido">
           🔊 Sonido: ON
         </button>
@@ -1796,6 +1799,57 @@
       <div id="rescuers-modal-body">
         <!-- Renderizado dinámico con renderRescuersLeaderboard() -->
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EXPORTAR REPORTES Y PLANILLAS -->
+  <div class="modal-overlay" id="export-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <span>📥</span> Exportar Datos de Rescate
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Descargá el registro oficial de casos de Córdoba para gestión comunitaria o veterinaria
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeExportModal()">&times;</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; margin: 16px 0;">
+        <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div>
+            <div style="font-size: 0.9rem; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 6px;">
+              <span>📊</span> Planilla Excel / CSV
+            </div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 2px;">
+              Formato UTF-8 con tildes y formato de moneda. Compatible con Microsoft Excel, Google Sheets y NocoDB.
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="exportCasesToExcel()" style="white-space: nowrap;">
+            Descargar CSV
+          </button>
+        </div>
+
+        <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div>
+            <div style="font-size: 0.9rem; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 6px;">
+              <span>📄</span> Dossier Imprimible / PDF
+            </div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 2px;">
+              Informe estructurado con resumen de KPIs, estado de emergencias, desglose por barrios y nómina de michis.
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="exportCasesToPDF()" style="white-space: nowrap;">
+            Generar PDF
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-white btn-full" onclick="closeExportModal()">
+        Cerrar
+      </button>
     </div>
   </div>
 
@@ -3220,9 +3274,15 @@
       </div>
 
       <!-- ACCIONES DEL MODAL -->
-      <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button class="btn btn-whatsapp btn-full" onclick="shareStatsWhatsApp()" title="Compartir métricas comunitarias en WhatsApp">
-          📢 Difundir Resumen en WhatsApp
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+        <button class="btn btn-whatsapp" style="flex: 1.2; min-width: 170px;" onclick="shareStatsWhatsApp()" title="Compartir métricas comunitarias en WhatsApp">
+          📢 Difundir Resumen
+        </button>
+        <button class="btn btn-secondary" style="flex: 1; min-width: 140px;" onclick="exportCasesToExcel()" title="Descargar planilla compatible con Excel y Google Sheets">
+          📊 Descargar Excel (CSV)
+        </button>
+        <button class="btn btn-secondary" style="flex: 1; min-width: 130px;" onclick="exportCasesToPDF()" title="Descargar o imprimir informe en PDF">
+          📄 Imprimir / PDF
         </button>
         <button class="btn btn-white" onclick="closeStatsModal()" title="Cerrar modal">
           Cerrar
@@ -3231,6 +3291,333 @@
     `;
 
     document.getElementById('stats-modal-body').innerHTML = html;
+  }
+
+  // ==========================================
+  // EXPORTADOR DE REPORTES (EXCEL / CSV & PDF)
+  // ==========================================
+  function openExportModal() {
+    document.getElementById('export-modal').classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('open');
+  }
+
+  function exportCasesToExcel() {
+    if (!catCases || catCases.length === 0) {
+      showToast('⚠️ No hay casos registrados para exportar');
+      return;
+    }
+
+    const headers = [
+      "ID",
+      "Nombre del Michi",
+      "Estado",
+      "Barrio / Ubicación",
+      "Latitud",
+      "Longitud",
+      "Edad",
+      "Sexo",
+      "Castrado",
+      "Salud / Diagnóstico",
+      "Descripción",
+      "Reportado Por / Protector",
+      "WhatsApp de Contacto",
+      "Deuda Veterinaria (ARS)",
+      "Recaudado (ARS)",
+      "Saldo Pendiente (ARS)",
+      "Fecha de Reporte"
+    ];
+
+    const escapeCsv = (str) => {
+      if (str === null || str === undefined) return '""';
+      const clean = String(str).replace(/"/g, '""');
+      return `"${clean}"`;
+    };
+
+    const rows = catCases.map(cat => {
+      const deuda = Number(cat.deudaVet || 0);
+      const rec = Number(cat.recaudado || 0);
+      const saldo = Math.max(0, deuda - rec);
+
+      return [
+        escapeCsv(cat.id),
+        escapeCsv(cat.nombre),
+        escapeCsv(cat.estado),
+        escapeCsv(cat.barrio),
+        cat.lat,
+        cat.lng,
+        escapeCsv(cat.edad || "Desconocida"),
+        escapeCsv(cat.sexo || "Desconocido"),
+        escapeCsv(cat.castrado || "No informado"),
+        escapeCsv(cat.salud || "Sin detalles"),
+        escapeCsv(cat.descripcion || ""),
+        escapeCsv(cat.reportadoPor || "Comunidad"),
+        escapeCsv(cat.whatsapp || ""),
+        deuda,
+        rec,
+        saldo,
+        escapeCsv(cat.fecha || "Reciente")
+      ].join(',');
+    });
+
+    // UTF-8 BOM (\uFEFF) para que Excel abra los caracteres en español sin romper tildes
+    const csvContent = '\uFEFF' + [headers.map(h => `"${h}"`).join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const nowStr = new Date().toISOString().slice(0, 10);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `reporte-michis-cordoba-${nowStr}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    playSuccessChime();
+    showToast('📊 Reporte CSV descargado con éxito');
+    closeExportModal();
+  }
+
+  function exportCasesToPDF() {
+    if (!catCases || catCases.length === 0) {
+      showToast('⚠️ No hay casos registrados para exportar');
+      return;
+    }
+
+    const total = catCases.length;
+    const emergencias = catCases.filter(c => c.estado === 'EMERGENCIA').length;
+    const avistados = catCases.filter(c => c.estado === 'AVISTADO').length;
+    const rescates = catCases.filter(c => c.estado === 'EN_RESCATE').length;
+    const transitos = catCases.filter(c => c.estado === 'TRANSITO').length;
+    const adopciones = catCases.filter(c => c.estado === 'ADOPCION').length;
+
+    let totalDeuda = 0;
+    let totalRec = 0;
+    catCases.forEach(c => {
+      totalDeuda += (c.deudaVet || 0);
+      totalRec += (c.recaudado || 0);
+    });
+
+    const nowStr = new Date().toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Reporte Oficial de Rescate · Red Michis Córdoba</title>
+        <style>
+          @page { size: A4 portrait; margin: 15mm; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #1a202c;
+            line-height: 1.4;
+            padding: 0;
+            margin: 0;
+          }
+          .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ff6b4a;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+          }
+          .title-box h1 {
+            font-size: 20px;
+            color: #121826;
+            margin: 0 0 4px 0;
+          }
+          .title-box p {
+            font-size: 11px;
+            color: #718096;
+            margin: 0;
+          }
+          .date-box {
+            text-align: right;
+            font-size: 11px;
+            color: #4a5568;
+          }
+          .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+          }
+          .kpi-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 8px;
+            text-align: center;
+            background: #f7fafc;
+          }
+          .kpi-val {
+            font-size: 18px;
+            font-weight: 900;
+            color: #121826;
+          }
+          .kpi-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+          }
+          .table-title {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #121826;
+            margin: 16px 0 8px 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 20px;
+          }
+          th {
+            background: #edf2f7;
+            color: #2d3748;
+            font-weight: 800;
+            text-align: left;
+            padding: 7px 6px;
+            border: 1px solid #cbd5e0;
+          }
+          td {
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+          }
+          tr:nth-child(even) {
+            background: #f8fafc;
+          }
+          .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 8.5px;
+            color: white;
+          }
+          .b-EMERGENCIA { background: #e53e3e; }
+          .b-AVISTADO { background: #dd6b20; }
+          .b-EN_RESCATE { background: #3182ce; }
+          .b-TRANSITO { background: #805ad5; }
+          .b-ADOPCION { background: #38a169; }
+          .footer {
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 10px;
+            font-size: 9px;
+            color: #718096;
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="title-box">
+            <h1>🐱 Red Michis Córdoba · Reporte Logístico</h1>
+            <p>Monitoreo Oficial de Avistamientos, Rescates y Hogares de Tránsito</p>
+          </div>
+          <div class="date-box">
+            <strong>Generado:</strong><br>${nowStr}<br>
+            <strong>Córdoba Capital</strong>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-val">${total}</div>
+            <div class="kpi-label">🐾 Total</div>
+          </div>
+          <div class="kpi-card" style="border-color: #feb2b2;">
+            <div class="kpi-val" style="color: #e53e3e;">${emergencias}</div>
+            <div class="kpi-label" style="color: #e53e3e;">🚨 Emergencias</div>
+          </div>
+          <div class="kpi-card" style="border-color: #fbd38d;">
+            <div class="kpi-val" style="color: #dd6b20;">${avistados}</div>
+            <div class="kpi-label" style="color: #dd6b20;">🔍 En Calle</div>
+          </div>
+          <div class="kpi-card" style="border-color: #bee3f8;">
+            <div class="kpi-val" style="color: #3182ce;">${rescates}</div>
+            <div class="kpi-label" style="color: #3182ce;">🚑 En Rescate</div>
+          </div>
+          <div class="kpi-card" style="border-color: #e9d8fd;">
+            <div class="kpi-val" style="color: #805ad5;">${transitos}</div>
+            <div class="kpi-label" style="color: #805ad5;">🏠 Tránsito</div>
+          </div>
+          <div class="kpi-card" style="border-color: #c6f6d5;">
+            <div class="kpi-val" style="color: #38a169;">${adopciones}</div>
+            <div class="kpi-label" style="color: #38a169;">💚 Adopción</div>
+          </div>
+        </div>
+
+        <div class="table-title">📋 Nómina Completa de Michis Registrados</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Michi</th>
+              <th style="width: 12%;">Estado</th>
+              <th style="width: 20%;">Barrio / Ubicación</th>
+              <th style="width: 25%;">Salud & Descripción</th>
+              <th style="width: 15%;">Protector / Contacto</th>
+              <th style="width: 13%;">Balance Vet</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${catCases.map(c => `
+              <tr>
+                <td><strong>${c.nombre}</strong><br><span style="color:#718096;">${c.edad || 'Edad desc.'} · ${c.sexo || ''}</span></td>
+                <td><span class="badge b-${c.estado}">${c.estado.replace('_', ' ')}</span></td>
+                <td>${c.barrio}<br><span style="color:#718096; font-size: 8px;">GPS: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}</span></td>
+                <td><strong>${c.salud || ''}</strong><br>${c.descripcion || ''}</td>
+                <td>${c.reportadoPor || 'Comunidad'}<br><span style="color:#2b6cb0;">${c.whatsapp || ''}</span></td>
+                <td>
+                  ${c.deudaVet > 0 ? `Deuda: $${c.deudaVet.toLocaleString('es-AR')}<br>` : ''}
+                  ${c.recaudado > 0 ? `Rec: $${c.recaudado.toLocaleString('es-AR')}<br>` : ''}
+                  ${(c.deudaVet - c.recaudado) > 0 ? `<strong style="color:#e53e3e;">Resta: $${(c.deudaVet - c.recaudado).toLocaleString('es-AR')}</strong>` : '<span style="color:#38a169;">Sin deuda</span>'}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          Red Michis Córdoba · Sistema de Logística y Rescate · Documento Comunitario Oficial · Generado automáticamente
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast('⚠️ Permití las ventanas emergentes para generar el PDF');
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    printWindow.onload = () => {
+      printWindow.focus();
+      printWindow.print();
+    };
+
+    playSuccessChime();
+    showToast('📄 Preparando vista de impresión / PDF');
+    closeExportModal();
   }
 
   function filterFromStats(status = 'ALL', barrio = 'ALL') {
