@@ -48,6 +48,134 @@
       --shadow-lg: 0 16px 40px rgba(0,0,0,0.15);
     }
 
+    /* MODO NOCHE (DARK MODE THEME) */
+    body.dark-theme {
+      --bg: #0b0f19;
+      --dark: #f8fafc;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+      --primary-light: rgba(255, 107, 74, 0.15);
+    }
+
+    body.dark-theme #map {
+      background: #090d16;
+    }
+
+    body.dark-theme .brand-badge {
+      background: rgba(15, 23, 42, 0.90);
+      border-color: rgba(51, 65, 85, 0.6);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    body.dark-theme .btn-white {
+      background: rgba(30, 41, 59, 0.92);
+      color: #f8fafc;
+      border-color: #334155;
+    }
+
+    body.dark-theme .btn-white:hover {
+      background: #334155;
+    }
+
+    body.dark-theme .btn-secondary {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-color: #334155;
+    }
+
+    body.dark-theme .btn-secondary:hover {
+      background: #334155;
+    }
+
+    body.dark-theme .chip, body.dark-theme .chip-barrio {
+      background: rgba(30, 41, 59, 0.88);
+      color: #e2e8f0;
+      border-color: #334155;
+    }
+
+    body.dark-theme .search-box {
+      background: rgba(15, 23, 42, 0.94);
+      border-color: #334155;
+    }
+
+    body.dark-theme .search-box:focus-within {
+      background: #1e293b;
+    }
+
+    body.dark-theme .search-input {
+      color: #f8fafc;
+    }
+
+    body.dark-theme .search-dropdown {
+      background: #0f172a;
+      border-color: #334155;
+    }
+
+    body.dark-theme .search-item {
+      border-bottom-color: #1e293b;
+    }
+
+    body.dark-theme .search-item:hover, body.dark-theme .search-item.selected {
+      background: #1e293b;
+    }
+
+    body.dark-theme .sidebar {
+      background: #0f172a;
+      border-left-color: #1e293b;
+    }
+
+    body.dark-theme .sidebar-header {
+      border-bottom-color: #1e293b;
+    }
+
+    body.dark-theme .modal-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #1e293b;
+    }
+
+    body.dark-theme .form-input, 
+    body.dark-theme .form-select, 
+    body.dark-theme .form-textarea {
+      background: #1e293b;
+      color: #f8fafc;
+      border-color: #334155;
+    }
+
+    body.dark-theme .trait-card,
+    body.dark-theme .gps-box,
+    body.dark-theme .funding-box,
+    body.dark-theme .rescuer-box,
+    body.dark-theme .stat-kpi-card,
+    body.dark-theme .badge-showcase-card,
+    body.dark-theme .rescuer-rank-item {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    body.dark-theme .stat-barrio-item {
+      border-bottom-color: #334155;
+    }
+
+    body.dark-theme .stat-barrio-item:hover {
+      background: #1e293b;
+    }
+
+    body.dark-theme .stat-barrios-list {
+      border-color: #334155;
+    }
+
+    body.dark-theme .cat-pin {
+      box-shadow: 0 0 16px rgba(255, 107, 74, 0.45);
+    }
+
+    body.dark-theme .toast {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
@@ -57,6 +185,7 @@
       overflow: hidden;
       height: 100vh;
       width: 100vw;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* CONTENEDOR PRINCIPAL */
@@ -1450,6 +1579,9 @@
       </div>
 
       <div class="quick-actions">
+        <button class="btn btn-secondary" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar modo oscuro / claro">
+          🌙 Modo Noche
+        </button>
         <button class="btn btn-secondary" onclick="openRescuersModal()" title="Muro de honor y reconocimientos a rescatistas de Córdoba">
           🏅 Rescatistas
         </button>
@@ -1833,6 +1965,43 @@
   }
 
   // ==========================================
+  // CONFIGURACIÓN DE TEMA & MODO NOCHE
+  // ==========================================
+  const TILE_LIGHT_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  const TILE_DARK_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png';
+  let activeTileLayer = null;
+  let isDarkMode = localStorage.getItem('red_michis_theme') === 'dark' || 
+                   (!localStorage.getItem('red_michis_theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  function applyTheme(isDark) {
+    isDarkMode = isDark;
+    localStorage.setItem('red_michis_theme', isDark ? 'dark' : 'light');
+    document.body.classList.toggle('dark-theme', isDark);
+
+    const btn = document.getElementById('btn-theme-toggle');
+    if (btn) {
+      btn.innerHTML = isDark ? '☀️ Modo Día' : '🌙 Modo Noche';
+      btn.title = isDark ? 'Cambiar a modo diurno' : 'Cambiar a modo nocturno';
+    }
+
+    if (mapInstance) {
+      if (activeTileLayer) {
+        mapInstance.removeLayer(activeTileLayer);
+      }
+      activeTileLayer = L.tileLayer(isDark ? TILE_DARK_URL : TILE_LIGHT_URL, {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap',
+        maxZoom: 19
+      }).addTo(mapInstance);
+    }
+  }
+
+  function toggleTheme() {
+    applyTheme(!isDarkMode);
+    playSuccessChime();
+    showToast(isDarkMode ? '🌙 Modo Noche activado' : '☀️ Modo Día activado');
+  }
+
+  // ==========================================
   // INICIALIZACIÓN DEL MAPA LEAFLET
   // ==========================================
   function initMap() {
@@ -1845,11 +2014,8 @@
     // Control de zoom en esquina inferior derecha
     L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
 
-    // Tiles de OpenStreetMap / CartoDB Voyager (limpio y moderno)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap',
-      maxZoom: 19
-    }).addTo(mapInstance);
+    // Aplicar capa de tiles según tema activo
+    applyTheme(isDarkMode);
 
     // Grupo de clusters con estilo personalizado
     markerClusterGroup = L.markerClusterGroup({
