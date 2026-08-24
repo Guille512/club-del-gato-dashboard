@@ -671,6 +671,19 @@
     .btn-whatsapp { background: #25d366; color: white; }
     .btn-whatsapp:hover { background: #20ba59; }
 
+    .btn-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(220, 39, 67, 0.35);
+      border: none;
+      font-weight: 800;
+    }
+    .btn-instagram:hover {
+      background: linear-gradient(45deg, #e08322 0%, #d5572b 25%, #cb1632 50%, #bb1255 75%, #ab0777 100%);
+      box-shadow: 0 6px 20px rgba(220, 39, 67, 0.5);
+      transform: translateY(-2px);
+    }
+
     /* MODAL DE REPORTE */
     .modal-overlay {
       position: fixed;
@@ -1548,6 +1561,10 @@
         <button class="btn btn-whatsapp btn-full" onclick="shareWhatsApp('${cat.id}')">
           💬 Contactar por WhatsApp (${cat.whatsapp})
         </button>
+
+        <button class="btn btn-instagram btn-full" onclick="exportCatStory('${cat.id}')" title="Generar imagen para historias de Instagram o WhatsApp">
+          📸 Generar Historia de Instagram (PNG)
+        </button>
       </div>
     `;
 
@@ -1557,6 +1574,237 @@
 
   function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
+  }
+
+  // ==========================================
+  // EXPORTADOR DE HISTORIAS DE INSTAGRAM (CANVAS 1080x1920)
+  // ==========================================
+  async function exportCatStory(catId) {
+    const cat = catCases.find(c => c.id === catId);
+    if (!cat) return;
+
+    showToast('🎨 Generando historia de Instagram en alta definición...');
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Fondo elegante oscuro con degradé
+    const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1920);
+    bgGrad.addColorStop(0, '#0f172a');
+    bgGrad.addColorStop(0.5, '#1e293b');
+    bgGrad.addColorStop(1, '#090d16');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // 2. Halo de color temático según estado
+    const statusColors = {
+      EMERGENCIA: '#e53e3e',
+      AVISTADO: '#ff6b4a',
+      EN_RESCATE: '#805ad5',
+      TRANSITO: '#3182ce',
+      ADOPCION: '#38a169'
+    };
+    const accentColor = statusColors[cat.estado] || '#ff6b4a';
+
+    const glowGrad = ctx.createRadialGradient(540, 700, 50, 540, 700, 600);
+    glowGrad.addColorStop(0, accentColor + '33');
+    glowGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = glowGrad;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // 3. Encabezado de la Red
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 38px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🐾 RED MICHIS CÓRDOBA', 540, 130);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '600 24px Inter, sans-serif';
+    ctx.fillText('RED COLABORATIVA DE RESCATE Y ADOPCIÓN', 540, 175);
+
+    // 4. Badge de Estado Superior
+    const statusLabels = {
+      EMERGENCIA: '🚨 EMERGENCIA MÉDICA URGENTE',
+      AVISTADO: '🔍 AVISTADO EN CALLE',
+      EN_RESCATE: '🚑 RESCATE EN PROGRESO',
+      TRANSITO: '🏠 NECESITA TRÁNSITO URGENTE',
+      ADOPCION: '💚 EN ADOPCIÓN RESPONSABLE'
+    };
+    const statusText = statusLabels[cat.estado] || cat.estado;
+
+    ctx.fillStyle = accentColor;
+    roundRect(ctx, 140, 220, 800, 64, 32, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 28px Inter, sans-serif';
+    ctx.fillText(statusText, 540, 263);
+
+    // 5. Cargar y dibujar foto del gato
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => {
+          img.src = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80';
+          img.onload = resolve;
+          img.onerror = reject;
+        };
+        img.src = cat.foto;
+      });
+
+      ctx.save();
+      roundRect(ctx, 140, 320, 800, 750, 36, false, false);
+      ctx.clip();
+      
+      const scale = Math.max(800 / img.width, 750 / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = 140 + (800 - w) / 2;
+      const y = 320 + (750 - h) / 2;
+      ctx.drawImage(img, x, y, w, h);
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = 4;
+      roundRect(ctx, 140, 320, 800, 750, 36, false, true);
+
+    } catch (e) {
+      console.warn('No se pudo cargar la imagen para canvas', e);
+    }
+
+    // 6. Título y Ubicación
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 62px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(cat.nombre, 140, 1140);
+
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '700 32px Inter, sans-serif';
+    ctx.fillText(`📍 ${cat.barrio} · Córdoba Capital`, 140, 1195);
+
+    // 7. Grid de Datos Clave
+    ctx.fillStyle = '#1e293b';
+    roundRect(ctx, 140, 1230, 385, 120, 20, true, false);
+    roundRect(ctx, 555, 1230, 385, 120, 20, true, false);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '600 20px Inter, sans-serif';
+    ctx.fillText('EDAD / SALUD', 170, 1270);
+    ctx.fillText('SEXO / CASTRADO', 585, 1270);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 28px Inter, sans-serif';
+    ctx.fillText(`${cat.edad || 'Joven'}`, 170, 1315);
+    ctx.fillText(`${cat.sexo || 'N/D'} · ${cat.castrado || 'No'}`, 585, 1315);
+
+    // 8. Descripción / Detalle
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '500 26px Inter, sans-serif';
+    wrapText(ctx, `"${cat.descripcion.slice(0, 140)}${cat.descripcion.length > 140 ? '...' : ''}"`, 140, 1400, 800, 38);
+
+    // 9. Barra de Donación Veterinaria (si aplica)
+    let nextY = 1530;
+    if (cat.deudaVet > 0) {
+      ctx.fillStyle = 'rgba(221, 107, 32, 0.15)';
+      roundRect(ctx, 140, nextY, 800, 110, 24, true, false);
+      ctx.strokeStyle = '#dd6b20';
+      ctx.lineWidth = 2;
+      roundRect(ctx, 140, nextY, 800, 110, 24, false, true);
+
+      ctx.fillStyle = '#fed7aa';
+      ctx.font = '700 24px Inter, sans-serif';
+      ctx.fillText(`💉 Gastos Veterinarios: $${cat.recaudado.toLocaleString()} / $${cat.deudaVet.toLocaleString()} ARS`, 170, nextY + 45);
+
+      const pct = Math.min(1, cat.recaudado / cat.deudaVet);
+      ctx.fillStyle = '#334155';
+      roundRect(ctx, 170, nextY + 65, 740, 18, 9, true, false);
+      if (pct > 0) {
+        ctx.fillStyle = '#38a169';
+        roundRect(ctx, 170, nextY + 65, Math.max(18, 740 * pct), 18, 9, true, false);
+      }
+      nextY += 140;
+    }
+
+    // 10. Call To Action Footer
+    ctx.fillStyle = '#25d366';
+    roundRect(ctx, 140, nextY, 800, 95, 24, true, false);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 32px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`💬 Contactar: ${cat.whatsapp}`, 540, nextY + 58);
+
+    // Hashtag final
+    ctx.fillStyle = '#64748b';
+    ctx.font = '700 22px Inter, sans-serif';
+    ctx.fillText('¡COMPARTÍ ESTA HISTORIA PARA DIFUNDIR EL CASO! · #RedMichisCba', 540, 1860);
+
+    // Exportar Blob y Descargar / Compartir
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        showToast('❌ Error generando imagen');
+        return;
+      }
+
+      const fileName = `historia-michi-${cat.nombre.toLowerCase().replace(/[^a-z0-9]/g, '-')}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `Rescate de ${cat.nombre} en Córdoba`,
+            text: `¡Ayudá a difundir el caso de ${cat.nombre} en ${cat.barrio}! #RedMichisCba`
+          });
+          showToast('🚀 ¡Historia enviada al menú de compartir!');
+          return;
+        } catch (err) {}
+      }
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`📸 ¡Historia de ${cat.nombre} descargada en PNG!`);
+    }, 'image/png');
+  }
+
+  // Helpers Canvas
+  function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && n > 0) {
+        ctx.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, x, y);
   }
 
   // ==========================================
