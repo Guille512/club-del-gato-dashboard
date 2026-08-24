@@ -612,11 +612,6 @@
       color: var(--dark);
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
-      border-radius: 4px;
-      border: 1px solid #cbd5e0;
-      margin-left: 6px;
-      user-select: none;
-    }
 
     /* DROPDOWN DE RESULTADOS DE BÚSQUEDA */
     .search-dropdown {
@@ -1293,6 +1288,11 @@
       color: var(--text);
       margin-bottom: 20px;
       background: #fffdfc;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
     /* CAJA DE GEOLOCALIZACIÓN Y NAVEGACIÓN GPS */
     .gps-box {
       background: #f8fafc;
@@ -2043,8 +2043,69 @@
       color: #334155;
     }
 
+    /* MODALES GLOBALES */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 24, 38, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border: 1.5px solid var(--border);
+      transform: scale(0.94);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    body.dark-theme .modal-card {
+      background: #0f172a;
+      border-color: #1e293b;
+      color: #e2e8f0;
+    }
+    .modal-card.modal-card-lg {
+      max-width: 720px;
+    }
     .modal-overlay.open .modal-card {
       transform: scale(1);
+    }
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .close-btn:hover {
+      color: var(--dark);
+      background: #f1f5f9;
+    }
+    body.dark-theme .close-btn:hover {
+      color: white;
+      background: #1e293b;
     }
 
     .modal-header {
