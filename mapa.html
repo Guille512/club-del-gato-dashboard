@@ -935,6 +935,190 @@
       color: var(--dark);
     }
 
+    /* SISTEMA DE INSIGNIAS Y RECONOCIMIENTOS */
+    .rescuer-box {
+      background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+      border: 1.5px solid #cbd5e0;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .rescuer-box:hover {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    }
+    .rescuer-avatar {
+      font-size: 1.6rem;
+      background: white;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border: 1.5px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .rescuer-details {
+      flex: 1;
+    }
+    .rescuer-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .rescuer-name {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-top: 1px;
+    }
+    .rescuer-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #92400e;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-top: 4px;
+      border: 1px solid #fde68a;
+    }
+    .rescuer-icon-link {
+      font-size: 1.1rem;
+      color: #d97706;
+      opacity: 0.85;
+      transition: transform 0.2s ease;
+    }
+    .rescuer-box:hover .rescuer-icon-link {
+      transform: scale(1.2) rotate(12deg);
+      opacity: 1;
+    }
+
+    /* LEADERBOARD & MODAL DE RESCATISTAS */
+    .rescuers-hero {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .rescuers-hero-text h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fef08a;
+      margin-bottom: 4px;
+    }
+    .rescuers-hero-text p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    .badge-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .badge-showcase-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-showcase-icon {
+      font-size: 1.8rem;
+      margin-bottom: 2px;
+    }
+    .badge-showcase-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .badge-showcase-desc {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .rescuer-rank-item {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .rescuer-rank-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .rescuer-rank-item.top-1 {
+      border-color: #f59e0b;
+      background: #fffdf5;
+    }
+    .rescuer-rank-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .rescuer-rank-num {
+      font-size: 1.1rem;
+      font-weight: 900;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: var(--dark);
+    }
+    .rescuer-rank-item.top-1 .rescuer-rank-num {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .rescuer-rank-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 3px;
+    }
+    .rescuer-mini-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: #edf2f7;
+      color: #334155;
+    }
+
     .modal-overlay.open .modal-card {
       transform: scale(1);
     }
@@ -1102,6 +1286,9 @@
       </div>
 
       <div class="quick-actions">
+        <button class="btn btn-secondary" onclick="openRescuersModal()" title="Muro de honor y reconocimientos a rescatistas de Córdoba">
+          🏅 Rescatistas
+        </button>
         <button class="btn btn-secondary" onclick="openStatsModal()" title="Ver estadísticas en vivo de rescates en Córdoba">
           📊 Estadísticas
         </button>
@@ -1276,6 +1463,27 @@
 
       <div id="stats-modal-body">
         <!-- Renderizado dinámico con renderLiveStats() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MURO DE HONOR & INSIGNIAS DE RESCATISTAS -->
+  <div class="modal-overlay" id="rescuers-modal">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <span>🏅</span> Muro de Honor · Rescatistas y Voluntarios
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Reconocimientos, insignias comunitarias y líderes de rescate en Córdoba
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeRescuersModal()">&times;</button>
+      </div>
+
+      <div id="rescuers-modal-body">
+        <!-- Renderizado dinámico con renderRescuersLeaderboard() -->
       </div>
     </div>
   </div>
@@ -1787,6 +1995,17 @@
             <span>🗺️</span> Google Maps
           </button>
         </div>
+      </div>
+
+      <!-- RECONOCIMIENTO Y PERFIL DEL RESCATISTA -->
+      <div class="rescuer-box" onclick="openRescuersModal('${cat.reportadoPor}')" title="Ver perfil e insignias de ${cat.reportadoPor}">
+        <div class="rescuer-avatar">${getRescuerEmoji(cat.reportadoPor)}</div>
+        <div class="rescuer-details">
+          <div class="rescuer-label">Protegido y Reportado por</div>
+          <div class="rescuer-name">${cat.reportadoPor || 'Voluntario Comunitario'}</div>
+          <div class="rescuer-badge-pill">${getRescuerBadgePill(cat.reportadoPor)}</div>
+        </div>
+        <div class="rescuer-icon-link" title="Ver Muro de Honor">🏅</div>
       </div>
 
       ${fundingHtml}
@@ -2536,6 +2755,244 @@
       `💚 *En Adopción Responsable:* ${adopciones}\n\n` +
       `📈 *Efectividad y Rescate:* ${tasa}% de los michis ya cuentan con asistencia activa.\n\n` +
       `👉 ¡Sumate a dar tránsito o reportar avistamientos en Córdoba!`;
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // ==========================================
+  // SISTEMA DE INSIGNIAS Y RECONOCIMIENTOS A RESCATISTAS
+  // ==========================================
+  const BADGES_CATALOG = [
+    {
+      id: "angel_oro",
+      icon: "🥇",
+      title: "Ángel Guardián (Nivel Oro)",
+      desc: "Líder de rescate con 3 o más michis protegidos o con tránsito activo.",
+      color: "#f59e0b"
+    },
+    {
+      id: "primeros_auxilios",
+      icon: "🚑",
+      title: "Primeros Auxilios",
+      desc: "Intervino directamente en emergencias médicas críticas en Córdoba.",
+      color: "#e53e3e"
+    },
+    {
+      id: "hogar_oro",
+      icon: "🏠",
+      title: "Hogar de Tránsito",
+      desc: "Brinda abrigo provisorio y rehabilitación a gatos en recuperación.",
+      color: "#3182ce"
+    },
+    {
+      id: "ojo_lince",
+      icon: "🔍",
+      title: "Ojo de Lince",
+      desc: "Reportó avistamientos con coordenadas GPS exactas en vía pública.",
+      color: "#dd6b20"
+    },
+    {
+      id: "padrino_sol",
+      icon: "💙",
+      title: "Padrino Solidario",
+      desc: "Colaboró activamente en la recaudación de cuentas veterinarias.",
+      color: "#805ad5"
+    },
+    {
+      id: "verificado",
+      icon: "🌟",
+      title: "Voluntario Verificado",
+      desc: "Miembro confiable verificado de la Red Michis Córdoba.",
+      color: "#16a34a"
+    }
+  ];
+
+  function getRescuerEmoji(name = '') {
+    const clean = String(name).toLowerCase();
+    if (clean.includes('dra') || clean.includes('vet') || clean.includes('agustina')) return '🩺';
+    if (clean.includes('agrupacion') || clean.includes('asociacion') || clean.includes('red')) return '🤝';
+    if (clean.includes('vecinos') || clean.includes('barrio')) return '🏘️';
+    if (clean.includes('estudiante') || clean.includes('unc')) return '🎓';
+    return '🐱';
+  }
+
+  function getRescuerBadgePill(name = '') {
+    const clean = String(name).toLowerCase();
+    if (clean.includes('dra') || clean.includes('agustina')) {
+      return '🩺 Médica Veterinaria · Guardiana Oro';
+    }
+    if (clean.includes('agrupacion') || clean.includes('red')) {
+      return '🤝 Organización Verificada · 10+ Rescates';
+    }
+    const count = catCases.filter(c => (c.reportadoPor || '').toLowerCase().includes(clean)).length;
+    if (count >= 2) {
+      return `🥇 Ángel Guardián · ${count} Casos Protegidos`;
+    }
+    return '🌟 Rescatista Verificado · Red Michis';
+  }
+
+  function openRescuersModal(highlightRescuer = '') {
+    renderRescuersLeaderboard(highlightRescuer);
+    document.getElementById('rescuers-modal').classList.add('open');
+    playSuccessChime();
+  }
+
+  function closeRescuersModal() {
+    document.getElementById('rescuers-modal').classList.remove('open');
+  }
+
+  function renderRescuersLeaderboard(highlightRescuer = '') {
+    // 1. Agrupar rescatistas y calcular sus estadísticas
+    const rescuerMap = {};
+
+    catCases.forEach(c => {
+      const name = c.reportadoPor || 'Voluntario Comunitario';
+      if (!rescuerMap[name]) {
+        rescuerMap[name] = {
+          nombre: name,
+          total: 0,
+          emergencias: 0,
+          transitos: 0,
+          rescatados: 0,
+          adopciones: 0,
+          fondos: 0,
+          barrios: new Set(),
+          casos: []
+        };
+      }
+      rescuerMap[name].total += 1;
+      rescuerMap[name].casos.push(c);
+      rescuerMap[name].fondos += (c.recaudado || 0);
+      if (c.barrio) rescuerMap[name].barrios.add(c.barrio.split('(')[0].trim());
+      if (c.estado === 'EMERGENCIA') rescuerMap[name].emergencias += 1;
+      if (c.estado === 'TRANSITO') rescuerMap[name].transitos += 1;
+      if (c.estado === 'EN_RESCATE') rescuerMap[name].rescatados += 1;
+      if (c.estado === 'ADOPCION') rescuerMap[name].adopciones += 1;
+    });
+
+    const rescuersList = Object.values(rescuerMap).sort((a, b) => {
+      // Ordenar por impacto: emergencias y rescates pesan más
+      const scoreA = a.total * 2 + a.emergencias * 3 + a.rescatados * 2 + a.transitos * 2;
+      const scoreB = b.total * 2 + b.emergencias * 3 + b.rescatados * 2 + b.transitos * 2;
+      return scoreB - scoreA;
+    });
+
+    const html = `
+      <!-- HERO RESCATISTAS -->
+      <div class="rescuers-hero">
+        <div class="rescuers-hero-text">
+          <h4>🌟 Gracias a los Héroes que Salvan Vidas</h4>
+          <p>Cada reporte, traslado, hogar de tránsito o donación suma puntos para rescatar más michis en las calles de Córdoba.</p>
+        </div>
+        <div style="font-size: 2.4rem;">🏆</div>
+      </div>
+
+      <!-- CATÁLOGO DE INSIGNIAS OFICIALES -->
+      <div style="margin-bottom: 18px;">
+        <h4 style="font-size: 0.84rem; font-weight: 800; text-transform: uppercase; color: var(--dark); margin-bottom: 10px;">
+          🎖️ Insignias Oficiales de la Red
+        </h4>
+        <div class="badge-showcase-grid">
+          ${BADGES_CATALOG.map(b => `
+            <div class="badge-showcase-card">
+              <div class="badge-showcase-icon">${b.icon}</div>
+              <div class="badge-showcase-title" style="color: ${b.color};">${b.title}</div>
+              <div class="badge-showcase-desc">${b.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- LEADERBOARD / RANKING DE RESCATISTAS -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="font-size: 0.88rem; font-weight: 800; text-transform: uppercase; color: var(--dark);">
+          🏅 Muro de Rescatistas Destacados
+        </h4>
+        <span style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted);">
+          ${rescuersList.length} voluntarios activos
+        </span>
+      </div>
+
+      <div style="max-height: 280px; overflow-y: auto; padding-right: 4px; margin-bottom: 20px;">
+        ${rescuersList.map((r, idx) => {
+          const isTop1 = idx === 0;
+          const isHighlighted = highlightRescuer && r.nombre.toLowerCase().includes(highlightRescuer.toLowerCase());
+          const barriosText = Array.from(r.barrios).slice(0, 2).join(', ');
+
+          // Insignias otorgadas
+          const badges = ['🌟 Verificado'];
+          if (r.total >= 2) badges.push('🥇 Nivel Oro');
+          if (r.emergencias > 0) badges.push('🚑 Emergencias');
+          if (r.transitos > 0) badges.push('🏠 Tránsito');
+          if (r.fondos > 0) badges.push('💙 Padrino');
+
+          return `
+            <div class="rescuer-rank-item ${isTop1 ? 'top-1' : ''}" 
+                 style="${isHighlighted ? 'border-color: var(--primary); background: #fff7ed;' : ''}"
+                 onclick="filterByRescuer('${r.nombre}')"
+                 title="Hacé click para ver los casos de ${r.nombre}">
+              <div class="rescuer-rank-left">
+                <div class="rescuer-rank-num">${idx === 0 ? '👑' : idx + 1}</div>
+                <div class="rescuer-avatar" style="width: 38px; height: 38px; font-size: 1.3rem;">
+                  ${getRescuerEmoji(r.nombre)}
+                </div>
+                <div>
+                  <div style="font-size: 0.88rem; font-weight: 800; color: var(--dark);">
+                    ${r.nombre} ${isHighlighted ? '📍' : ''}
+                  </div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">
+                    📍 ${barriosText || 'Córdoba'}
+                  </div>
+                  <div class="rescuer-rank-badges">
+                    ${badges.map(b => `<span class="rescuer-mini-badge">${b}</span>`).join('')}
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 1.15rem; font-weight: 900; color: var(--primary);">
+                  ${r.total}
+                </div>
+                <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                  ${r.total === 1 ? 'michi' : 'michis'}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- ACCIONES -->
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-whatsapp btn-full" onclick="shareLeaderboardWhatsApp()" title="Compartir ranking de voluntarios">
+          📢 Compartir Muro de Honor en WhatsApp
+        </button>
+        <button class="btn btn-white" onclick="closeRescuersModal()">
+          Cerrar
+        </button>
+      </div>
+    `;
+
+    document.getElementById('rescuers-modal-body').innerHTML = html;
+  }
+
+  function filterByRescuer(rescuerName) {
+    closeRescuersModal();
+    const matches = catCases.filter(c => (c.reportadoPor || '').toLowerCase().includes(rescuerName.toLowerCase()));
+    if (matches.length > 0) {
+      const first = matches[0];
+      openSidebarWithCat(first);
+      showToast(`🏅 Mostrando casos protegidos por ${rescuerName}`);
+    }
+  }
+
+  function shareLeaderboardWhatsApp() {
+    const msg = `*🏅 MURO DE HONOR · RED MICHIS CÓRDOBA*\n\n` +
+      `¡Felicitaciones a los rescatistas, veterinarios y hogares de tránsito que están salvando vidas en los barrios de Córdoba!\n\n` +
+      `🏆 *Insignias Destacadas:*\n` +
+      `• 🥇 Ángeles Guardianes Nivel Oro\n` +
+      `• 🚑 Primeros Auxilios en Urgencias Médicas\n` +
+      `• 🏠 Hogares de Tránsito Solidarios\n\n` +
+      `👉 ¡Sumate a la Red Michis Córdoba para proteger a más gatitos en calle!`;
 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   }
