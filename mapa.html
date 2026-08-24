@@ -370,6 +370,18 @@
       animation: pinEntrance 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
 
+    /* ANIMACIÓN DE ZONA GEOGRÁFICA DE BARRIO */
+    .barrio-highlight-zone {
+      transition: all 0.5s ease;
+      animation: zonePulseRing 3s ease-in-out infinite;
+    }
+
+    @keyframes zonePulseRing {
+      0% { stroke-opacity: 0.8; stroke-width: 2.5px; }
+      50% { stroke-opacity: 0.3; stroke-width: 4px; }
+      100% { stroke-opacity: 0.8; stroke-width: 2.5px; }
+    }
+
     /* BARRA LATERAL / PANEL DE DETALLES */
     .sidebar {
       width: 420px;
@@ -1231,17 +1243,63 @@
     renderMarkers(true);
   }
 
+  // ==========================================
+  // CENTROS Y ZONAS GEOGRÁFICAS DE BARRIOS (CÓRDOBA)
+  // ==========================================
+  const BARRIO_CENTERS = {
+    'Nueva Córdoba': { center: [-31.426, -64.188], radius: 950, color: '#ff6b4a' },
+    'Alberdi': { center: [-31.410, -64.202], radius: 1100, color: '#3182ce' },
+    'Alta Córdoba': { center: [-31.398, -64.180], radius: 1200, color: '#805ad5' },
+    'Güemes': { center: [-31.428, -64.196], radius: 900, color: '#dd6b20' },
+    'San Vicente': { center: [-31.427, -64.156], radius: 1100, color: '#38a169' },
+    'Villa Belgrano': { center: [-31.365, -64.245], radius: 1800, color: '#319795' }
+  };
+
+  let activeBarrioZoneLayer = null;
+
+  function highlightBarrioZone(barrioKey) {
+    if (activeBarrioZoneLayer) {
+      mapInstance.removeLayer(activeBarrioZoneLayer);
+      activeBarrioZoneLayer = null;
+    }
+
+    if (barrioKey === 'ALL' || !BARRIO_CENTERS[barrioKey]) return;
+
+    const zone = BARRIO_CENTERS[barrioKey];
+    activeBarrioZoneLayer = L.circle(zone.center, {
+      radius: zone.radius,
+      color: zone.color,
+      weight: 2.5,
+      dashArray: '6, 8',
+      fillColor: zone.color,
+      fillOpacity: 0.12,
+      className: 'barrio-highlight-zone'
+    }).addTo(mapInstance);
+
+    // Auto-remover o desvanecer suavemente luego de 8 segundos si no cambia
+    setTimeout(() => {
+      if (activeBarrioZoneLayer && activeBarrioFilter === barrioKey) {
+        activeBarrioZoneLayer.setStyle({ fillOpacity: 0.06, weight: 1.5 });
+      }
+    }, 4000);
+  }
+
   function applyBarrioFilter(barrioKey) {
     activeBarrioFilter = barrioKey;
     document.querySelectorAll('#filter-chips-barrios .chip-barrio').forEach(c => {
       c.classList.toggle('active', c.dataset.barrio === barrioKey);
     });
+    highlightBarrioZone(barrioKey);
     renderMarkers(true);
   }
 
   function resetAllFilters() {
     activeStatusFilter = 'ALL';
     activeBarrioFilter = 'ALL';
+    if (activeBarrioZoneLayer) {
+      mapInstance.removeLayer(activeBarrioZoneLayer);
+      activeBarrioZoneLayer = null;
+    }
     document.querySelectorAll('#filter-chips-status .chip').forEach(c => {
       c.classList.toggle('active', c.dataset.filter === 'ALL');
     });
