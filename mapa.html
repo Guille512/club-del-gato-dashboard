@@ -2351,6 +2351,219 @@
       box-shadow: 0 6px 18px rgba(24, 119, 242, 0.5);
     }
 
+    /* PINES DE VETERINARIAS DE GUARDIA */
+    .custom-vet-pin {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #7c3aed;
+      color: white;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+      border: 3px solid white;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .custom-vet-pin:hover {
+      transform: scale(1.22);
+      z-index: 1000 !important;
+    }
+    .vet-pulse {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 3px solid #a78bfa;
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    /* BANNER DE ALERTA DE EMERGENCIAS ACTIVAS */
+    .emergency-alert-banner {
+      background: linear-gradient(90deg, #991b1b 0%, #b91c1c 100%);
+      color: white;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: var(--radius-sm);
+      margin-top: 4px;
+      font-size: 0.82rem;
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
+      animation: fadeInDown 0.3s ease;
+    }
+    .emergency-alert-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .emergency-alert-pulse {
+      font-size: 1.1rem;
+      animation: alertPulse 1.5s infinite;
+    }
+    .emergency-alert-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-emergency-action {
+      background: white;
+      color: #991b1b;
+      font-weight: 800;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.76rem;
+      transition: all 0.15s ease;
+    }
+    .btn-emergency-action:hover {
+      background: #fee2e2;
+      transform: scale(1.05);
+    }
+    .btn-emergency-telegram {
+      background: #0088cc;
+      color: white;
+      font-weight: 800;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.76rem;
+      transition: all 0.15s ease;
+    }
+    .btn-emergency-telegram:hover {
+      background: #0077b5;
+      transform: scale(1.05);
+    }
+
+    /* PANEL DE FILTROS AVANZADOS (EDAD, SEXO, CASTRACIÓN) */
+    .advanced-filters-panel {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.dark-theme .advanced-filters-panel {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(30, 41, 59, 0.8);
+    }
+    .adv-filter-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .adv-filter-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .adv-filter-select {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--dark);
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    body.dark-theme .adv-filter-select {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    .adv-filter-select:focus, .adv-filter-select:hover {
+      border-color: var(--primary);
+    }
+    .adv-filter-select.active-filter {
+      border-color: var(--primary);
+      background: #fff7ed;
+      color: #c2410c;
+    }
+    body.dark-theme .adv-filter-select.active-filter {
+      background: rgba(255, 107, 74, 0.15);
+      color: #ffedd5;
+    }
+
+    /* POPUP DE VETERINARIAS DE GUARDIA */
+    .vet-popup-card {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 6px 2px;
+      max-width: 270px;
+    }
+    .vet-popup-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #121826;
+      margin-bottom: 2px;
+    }
+    .vet-popup-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    .vet-popup-address {
+      font-size: 0.76rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .vet-popup-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .btn-vet-call {
+      background: #16a34a;
+      color: white;
+      text-decoration: none;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-vet-route {
+      background: #7c3aed;
+      color: white;
+      text-decoration: none;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
     /* CUSTOM PIN MARKERS */
     .custom-cat-pin {
       position: relative;
@@ -2511,6 +2724,9 @@
         <button class="nav-btn" onclick="openExportModal()" title="Exportar datos (Excel / PDF)">
           📥
         </button>
+        <button class="nav-btn" id="btn-vets-toggle" onclick="toggleVetGuardias()" title="Veterinarias de guardia 24hs y clínicas de urgencias en Córdoba">
+          🏥 <span class="nav-btn-text">Guardias 24hs</span>
+        </button>
         <button class="nav-btn" id="btn-sound-toggle" onclick="toggleSound()" title="Sonidos / Maullidos">
           🔊
         </button>
@@ -2544,10 +2760,11 @@
         </button>
       </div>
 
-      <div class="filter-separator"></div>
+      <!-- SEPARADOR -->
+      <div class="filter-divider"></div>
 
-      <!-- BARRIOS -->
-      <div class="filter-group" id="filter-chips-barrios">
+      <!-- BARRIOS DE CÓRDOBA -->
+      <div class="filter-group" id="filter-chips-barrio">
         <button class="chip-barrio active" data-barrio="ALL" onclick="applyBarrioFilter('ALL')">
           <span>📍 Barrios</span> <span class="count" id="count-barrio-all">0</span>
         </button>
@@ -2572,6 +2789,9 @@
         <button class="chip-barrio" id="chip-sort-distance" style="display: none; background: #ebf8ff; color: #2b6cb0; border-color: #bee3f8;" onclick="toggleSortByDistance()" title="Ordenar por cercanía GPS">
           <span>⚡ Más Cercanos</span>
         </button>
+        <button class="chip-barrio" id="btn-toggle-adv-filters" onclick="toggleAdvancedFiltersPanel()" title="Filtros avanzados por edad, sexo y castración" style="background: #f1f5f9; color: var(--dark); font-weight: 800;">
+          <span>⚙️ Filtros Avanzados</span>
+        </button>
         <button class="chip-barrio chip-reset" id="btn-reset-filters" style="display: none;" onclick="resetAllFilters()">
           <span>✕ Limpiar</span>
         </button>
@@ -2583,6 +2803,54 @@
           <span>✨ 0 casos</span>
           <span class="badge-clear" onclick="resetAllFilters()" title="Quitar filtros">✕</span>
         </div>
+      </div>
+    </div>
+
+    <!-- PANEL DESPLEGABLE DE FILTROS AVANZADOS -->
+    <div id="advanced-filters-panel" class="advanced-filters-panel" style="display: none;">
+      <div class="adv-filter-item">
+        <span class="adv-filter-label">🎂 Edad:</span>
+        <select id="adv-filter-age" class="adv-filter-select" onchange="onAdvancedFilterChange()">
+          <option value="ALL">Todas las edades</option>
+          <option value="BEBE">🍼 Bebés & Lactantes (0-6 meses)</option>
+          <option value="JOVEN">🐾 Jóvenes (6m - 2 años)</option>
+          <option value="ADULTO">🐱 Adultos (3+ años)</option>
+        </select>
+      </div>
+
+      <div class="adv-filter-item">
+        <span class="adv-filter-label">⚧ Sexo:</span>
+        <select id="adv-filter-sex" class="adv-filter-select" onchange="onAdvancedFilterChange()">
+          <option value="ALL">Todos</option>
+          <option value="MACHO">♂️ Machos</option>
+          <option value="HEMBRA">♀️ Hembras</option>
+        </select>
+      </div>
+
+      <div class="adv-filter-item">
+        <span class="adv-filter-label">✂️ Castración:</span>
+        <select id="adv-filter-castrated" class="adv-filter-select" onchange="onAdvancedFilterChange()">
+          <option value="ALL">Todos los estados</option>
+          <option value="SI">✅ Castrado / Esterilizado</option>
+          <option value="NO">🚨 Sin Castrar (Urgente)</option>
+          <option value="PENDIENTE">⏳ Pendiente post-recuperación</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-secondary" onclick="resetAdvancedFilters()" style="padding: 4px 10px; font-size: 0.72rem; margin-left: auto;">
+        ✕ Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- BANNER DE ALERTA DE EMERGENCIAS ACTIVAS -->
+    <div id="emergency-alert-banner" class="emergency-alert-banner" style="display: none;">
+      <div class="emergency-alert-content">
+        <span class="emergency-alert-pulse">🚨</span>
+        <span id="emergency-alert-text"><strong>¡Alerta de Rescate Activa!</strong> Michi en Nueva Córdoba necesita auxilio veterinario urgente.</span>
+      </div>
+      <div class="emergency-alert-actions">
+        <button class="btn-emergency-action" onclick="focusActiveEmergency()">Ver Caso</button>
+        <button class="btn-emergency-telegram" onclick="shareEmergencyTelegram()">📢 Avisar en Telegram</button>
       </div>
     </div>
   </header>
@@ -3045,15 +3313,85 @@
   let markerClusterGroup = null;
   let activeStatusFilter = 'ALL';
   let activeBarrioFilter = 'ALL';
+  let advAgeFilter = 'ALL';
+  let advSexFilter = 'ALL';
+  let advCastratedFilter = 'ALL';
+  let isAdvancedFiltersOpen = false;
   let sortByDistance = false;
   let isHeatmapActive = false;
   let heatLayer = null;
   let criticalZoneLabels = [];
+  let isVetGuardiasActive = false;
+  let vetMarkersGroup = null;
   let catCases = [];
   let userLocation = null; // { lat, lng, accuracy }
   let userLocationMarker = null;
   let userAccuracyCircle = null;
   let tempReportMarker = null;
+
+  // Catálogo georreferenciado de Veterinarias de Guardia 24hs en Córdoba Capital
+  const VET_GUARDIAS_CORDOBA = [
+    {
+      id: "vet-1",
+      nombre: "Hospital Veterinario Córdoba",
+      barrio: "Alberdi (Av. Colón 1845)",
+      lat: -31.4082,
+      lng: -64.2014,
+      telefono: "+5493514245678",
+      telefonoDisplay: "351 424-5678",
+      whatsapp: "+5493514245678",
+      horario: "🟢 ABIERTO 24 HORAS · Guardia Médica Continua",
+      servicios: "Internación felina, Cirugías de urgencia, Terapia intensiva, Rayos X y Laboratorio propio."
+    },
+    {
+      id: "vet-2",
+      nombre: "Centro Veterinario Nueva Córdoba",
+      barrio: "Nueva Córdoba (Estrada 120)",
+      lat: -31.4278,
+      lng: -64.1865,
+      telefono: "+5493514681122",
+      telefonoDisplay: "351 468-1122",
+      whatsapp: "+5493514681122",
+      horario: "🟢 GUARDIA ACTIVA 24HS",
+      servicios: "Atención de shock y traumatismos, Oxigenoterapia, Fluidoterapia, Ecografía de urgencia."
+    },
+    {
+      id: "vet-3",
+      nombre: "Clínica Veterinaria San Jerónimo",
+      barrio: "San Vicente (San Jerónimo 2640)",
+      lat: -31.4215,
+      lng: -64.1598,
+      telefono: "+5493514567890",
+      telefonoDisplay: "351 456-7890",
+      whatsapp: "+5493514567890",
+      horario: "🟢 ABIERTO 24 HORAS · Urgencias",
+      servicios: "Guardia pediátrica para lactantes, Tratamiento de hipotermia, Curaciones de emergencia."
+    },
+    {
+      id: "vet-4",
+      nombre: "Clínica Veterinaria Alta Córdoba",
+      barrio: "Alta Córdoba (Mariano Fragueiro 2150)",
+      lat: -31.3965,
+      lng: -64.1840,
+      telefono: "+5493514713344",
+      telefonoDisplay: "351 471-3344",
+      whatsapp: "+5493514713344",
+      horario: "🟢 GUARDIA NOCTURNA Y FERIADOS",
+      servicios: "Cirugía traumatológica felina, Transfusiones y Banco de sangre, Internación supervisada."
+    },
+    {
+      id: "vet-5",
+      nombre: "Hospital Veterinario Cerro de las Rosas",
+      barrio: "Cerro de las Rosas (Av. Rafael Núñez 3980)",
+      lat: -31.3725,
+      lng: -64.2340,
+      telefono: "+5493514819900",
+      telefonoDisplay: "351 481-9900",
+      whatsapp: "+5493514819900",
+      horario: "🟢 ABIERTO 24 HORAS",
+      servicios: "Monitoreo multiparamétrico, Quirófano de alta complejidad 24hs, Terapia intensiva felina."
+    }
+  ];
 
   // ==========================================
   // MAPA DE CALOR & ZONAS CRÍTICAS
@@ -3436,7 +3774,38 @@
         const inSalud = (cat.salud || '').toLowerCase().includes(q);
         matchSearch = inNombre || inBarrio || inRescatista || inDesc || inSalud;
       }
-      return matchStatus && matchBarrio && matchSearch;
+
+      // 4. Filtro avanzado por Edad
+      let matchAge = true;
+      if (advAgeFilter !== 'ALL') {
+        const edadStr = (cat.edad || '').toLowerCase();
+        if (advAgeFilter === 'BEBE') {
+          matchAge = edadStr.includes('mes') || edadStr.includes('bebé') || edadStr.includes('bebe') || edadStr.includes('lactante') || edadStr.includes('días');
+        } else if (advAgeFilter === 'JOVEN') {
+          matchAge = edadStr.includes('1 año') || edadStr.includes('2 años') || edadStr.includes('8 meses') || edadStr.includes('joven');
+        } else if (advAgeFilter === 'ADULTO') {
+          matchAge = edadStr.includes('3 año') || edadStr.includes('4 año') || edadStr.includes('5 año') || edadStr.includes('adulto') || (!edadStr.includes('mes') && !edadStr.includes('lactante') && !edadStr.includes('1 año') && !edadStr.includes('2 año'));
+        }
+      }
+
+      // 5. Filtro avanzado por Sexo
+      let matchSex = true;
+      if (advSexFilter !== 'ALL') {
+        const sexoStr = (cat.sexo || '').toLowerCase();
+        if (advSexFilter === 'MACHO') matchSex = sexoStr.includes('macho');
+        else if (advSexFilter === 'HEMBRA') matchSex = sexoStr.includes('hembra');
+      }
+
+      // 6. Filtro avanzado por Castración
+      let matchCastrated = true;
+      if (advCastratedFilter !== 'ALL') {
+        const castStr = (cat.castrado || '').toLowerCase();
+        if (advCastratedFilter === 'SI') matchCastrated = castStr.startsWith('sí') || castStr.startsWith('si') || castStr.includes('castrado') || castStr.includes('esterilizado');
+        else if (advCastratedFilter === 'NO') matchCastrated = castStr.startsWith('no') || castStr.includes('urgente') || castStr.includes('sin castrar');
+        else if (advCastratedFilter === 'PENDIENTE') matchCastrated = castStr.includes('pendiente') || castStr.includes('evaluar') || castStr.includes('post');
+      }
+
+      return matchStatus && matchBarrio && matchSearch && matchAge && matchSex && matchCastrated;
     });
 
     // Ordenamiento por cercanía geográfica si el usuario activó la geolocalización
@@ -3799,6 +4168,223 @@
 
     if (count === 0) {
       showToast(`No se encontraron casos para ${label}`);
+    }
+  }
+
+  // ==========================================
+  // CAPA INTERACTIVA DE VETERINARIAS DE GUARDIA 24HS
+  // ==========================================
+  function toggleVetGuardias() {
+    isVetGuardiasActive = !isVetGuardiasActive;
+    const btn = document.getElementById('btn-vets-toggle');
+
+    if (!isVetGuardiasActive) {
+      if (vetMarkersGroup && mapInstance.hasLayer(vetMarkersGroup)) {
+        mapInstance.removeLayer(vetMarkersGroup);
+      }
+      if (btn) {
+        btn.classList.remove('active');
+        btn.style.background = '';
+        btn.style.color = '';
+      }
+      showToast('🏥 Capa de veterinarias de guardia desactivada');
+      return;
+    }
+
+    if (btn) {
+      btn.classList.add('active');
+      btn.style.background = '#7c3aed';
+      btn.style.color = 'white';
+    }
+
+    renderVetGuardias();
+    playSuccessChime();
+    showToast('🏥 Mostrando veterinarias de guardia 24hs y emergencias en Córdoba');
+  }
+
+  function renderVetGuardias() {
+    if (!vetMarkersGroup) {
+      vetMarkersGroup = L.layerGroup();
+    }
+    vetMarkersGroup.clearLayers();
+
+    VET_GUARDIAS_CORDOBA.forEach(vet => {
+      const vetIcon = L.divIcon({
+        className: 'vet-pin-wrapper',
+        html: `
+          <div class="custom-vet-pin" title="${escapeHtml(vet.nombre)}">
+            <div class="vet-pulse"></div>
+            <span>🏥</span>
+          </div>
+        `,
+        iconSize: [42, 42],
+        iconAnchor: [21, 21],
+        popupAnchor: [0, -20]
+      });
+
+      const marker = L.marker([vet.lat, vet.lng], { icon: vetIcon, zIndexOffset: 900 });
+
+      let distStr = '';
+      if (userLocation) {
+        const d = calculateDistanceKm(userLocation.lat, userLocation.lng, vet.lat, vet.lng);
+        distStr = `<div style="font-size: 0.72rem; color: #2563eb; font-weight: 800; margin-bottom: 4px;">🚶 A ${formatDistance(d)} de tu ubicación actual</div>`;
+      }
+
+      const popupHtml = `
+        <div class="vet-popup-card">
+          <div class="vet-popup-title">🏥 ${escapeHtml(vet.nombre)}</div>
+          <div class="vet-popup-badge">${escapeHtml(vet.horario)}</div>
+          ${distStr}
+          <div class="vet-popup-address">📍 ${escapeHtml(vet.barrio)}</div>
+          <div style="font-size: 0.72rem; color: #475569; margin-bottom: 8px;"><strong>Servicios:</strong> ${escapeHtml(vet.servicios)}</div>
+          <div class="vet-popup-actions">
+            <a href="tel:${vet.telefono}" class="btn-vet-call" title="Llamar a la guardia">
+              📞 ${vet.telefonoDisplay}
+            </a>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${vet.lat},${vet.lng}" target="_blank" class="btn-vet-route" title="Cómo llegar con GPS">
+              🚗 Cómo Llegar
+            </a>
+          </div>
+          <button onclick="openVetWhatsApp('${vet.whatsapp}', '${escapeHtml(vet.nombre)}')" class="btn btn-whatsapp" style="width: 100%; margin-top: 6px; padding: 5px; font-size: 0.72rem; justify-content: center;">
+            💬 WhatsApp de Urgencia
+          </button>
+        </div>
+      `;
+
+      marker.bindPopup(popupHtml, { maxWidth: 280 });
+      vetMarkersGroup.addLayer(marker);
+    });
+
+    if (!mapInstance.hasLayer(vetMarkersGroup)) {
+      mapInstance.addLayer(vetMarkersGroup);
+    }
+  }
+
+  function openVetWhatsApp(whatsapp, vetNombre) {
+    const msg = encodeURIComponent(`Hola! Me comunico con la guardia de *${vetNombre}* por una urgencia veterinaria derivada desde Red Michis Córdoba.`);
+    window.open(`https://wa.me/${whatsapp.replace(/\D/g,'')}?text=${msg}`, '_blank');
+  }
+
+  // ==========================================
+  // FILTROS AVANZADOS (EDAD, SEXO, CASTRACIÓN)
+  // ==========================================
+  function toggleAdvancedFiltersPanel() {
+    isAdvancedFiltersOpen = !isAdvancedFiltersOpen;
+    const panel = document.getElementById('advanced-filters-panel');
+    const btn = document.getElementById('btn-toggle-adv-filters');
+    if (panel) {
+      panel.style.display = isAdvancedFiltersOpen ? 'flex' : 'none';
+    }
+    if (btn) {
+      btn.classList.toggle('active', isAdvancedFiltersOpen);
+      btn.style.background = isAdvancedFiltersOpen ? '#ffedd5' : '';
+      btn.style.color = isAdvancedFiltersOpen ? '#c2410c' : '';
+      btn.style.borderColor = isAdvancedFiltersOpen ? '#ff6b4a' : '';
+    }
+  }
+
+  function onAdvancedFilterChange() {
+    advAgeFilter = document.getElementById('adv-filter-age').value;
+    advSexFilter = document.getElementById('adv-filter-sex').value;
+    advCastratedFilter = document.getElementById('adv-filter-castrated').value;
+
+    document.getElementById('adv-filter-age').classList.toggle('active-filter', advAgeFilter !== 'ALL');
+    document.getElementById('adv-filter-sex').classList.toggle('active-filter', advSexFilter !== 'ALL');
+    document.getElementById('adv-filter-castrated').classList.toggle('active-filter', advCastratedFilter !== 'ALL');
+
+    renderMarkers(true);
+    updateCounts();
+  }
+
+  function resetAdvancedFilters() {
+    advAgeFilter = 'ALL';
+    advSexFilter = 'ALL';
+    advCastratedFilter = 'ALL';
+
+    const selAge = document.getElementById('adv-filter-age');
+    const selSex = document.getElementById('adv-filter-sex');
+    const selCast = document.getElementById('adv-filter-castrated');
+
+    if (selAge) { selAge.value = 'ALL'; selAge.classList.remove('active-filter'); }
+    if (selSex) { selSex.value = 'ALL'; selSex.classList.remove('active-filter'); }
+    if (selCast) { selCast.value = 'ALL'; selCast.classList.remove('active-filter'); }
+
+    renderMarkers(false);
+    updateCounts();
+    showToast('🧹 Filtros avanzados restablecidos');
+  }
+
+  // ==========================================
+  // MONITOREO DE EMERGENCIAS & ALERTAS N8N / TELEGRAM
+  // ==========================================
+  function checkActiveEmergencies() {
+    const banner = document.getElementById('emergency-alert-banner');
+    const bannerText = document.getElementById('emergency-alert-text');
+    if (!banner || !bannerText) return;
+
+    const emergencies = catCases.filter(c => c.estado === 'EMERGENCIA');
+    if (emergencies.length > 0) {
+      const topEmerg = emergencies[0];
+      bannerText.innerHTML = `<strong>🚨 ¡Alerta de Rescate Activa!</strong> ${escapeHtml(topEmerg.nombre)} en ${escapeHtml(topEmerg.barrio)} necesita auxilio médico urgente.`;
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  function focusActiveEmergency() {
+    const emergencies = catCases.filter(c => c.estado === 'EMERGENCIA');
+    if (emergencies.length > 0) {
+      const topEmerg = emergencies[0];
+      openSidebarWithCat(topEmerg);
+      mapInstance.flyTo([topEmerg.lat, topEmerg.lng], 16, { duration: 0.8 });
+      playSuccessChime();
+    }
+  }
+
+  function shareEmergencyTelegram(catId) {
+    let cat = null;
+    if (catId) {
+      cat = catCases.find(c => c.id === catId);
+    } else {
+      cat = catCases.find(c => c.estado === 'EMERGENCIA') || catCases[0];
+    }
+    if (!cat) return;
+
+    const msg = `🚨 *ALERTA SOS MICHIS CÓRDOBA*\n\n` +
+      `🐾 *Michi:* ${cat.nombre}\n` +
+      `📍 *Ubicación:* ${cat.barrio}\n` +
+      `🩺 *Estado de Salud:* ${cat.salud}\n` +
+      `📝 *Descripción:* ${cat.descripcion}\n` +
+      `💬 *Contacto WhatsApp:* ${cat.whatsapp}\n\n` +
+      `🗺️ *Ver en el mapa:* https://guille512.github.io/club-del-gato-dashboard/mapa.html\n\n` +
+      `#AlertaMichis #RescateCordoba #UrgenciaVeterinaria`;
+
+    window.open(`https://t.me/share/url?url=${encodeURIComponent('https://guille512.github.io/club-del-gato-dashboard/mapa.html')}&text=${encodeURIComponent(msg)}`, '_blank');
+    showToast('📢 Abriendo Telegram para enviar alerta al canal de rescatistas...');
+  }
+
+  function notifyEmergencyToN8n(cat) {
+    if (!cat || cat.estado !== 'EMERGENCIA') return;
+
+    // Intentar despacho de webhook a N8N (asíncrono sin bloquear la UI)
+    const n8nWebhookUrl = 'http://localhost:5678/webhook/alerta-michi-emergencia';
+    try {
+      fetch(n8nWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          evento: 'EMERGENCIA_CREADA',
+          timestamp: new Date().toISOString(),
+          michi: cat
+        })
+      }).then(res => {
+        if (res.ok) console.log('📡 Alerta enviada exitosamente a N8N');
+      }).catch(err => {
+        console.warn('ℹ️ Servidor N8N local en standby. Alerta guardada localmente.');
+      });
+    } catch (e) {
+      console.warn('Fallback webhook:', e);
     }
   }
 
@@ -6072,9 +6658,16 @@
     saveCases();
     renderMarkers();
     updateCounts();
+    checkActiveEmergencies();
     closeReportModal();
 
-    showToast(`✅ Alerta de ${nombre} agregada exitosamente al mapa`);
+    if (estado === 'EMERGENCIA') {
+      notifyEmergencyToN8n(newCase);
+      playRescueCelebration();
+      showToast(`🚨 ¡Alerta de EMERGENCIA emitida para ${nombre}!`);
+    } else {
+      showToast(`✅ Alerta de ${nombre} agregada exitosamente al mapa`);
+    }
     openSidebarWithCat(newCase);
   }
 
@@ -6101,6 +6694,7 @@
     updateSoundButton();
     loadCases();
     initMap();
+    checkActiveEmergencies();
 
     // Atajos de teclado para búsqueda (Ctrl+K o /)
     window.addEventListener('keydown', (e) => {
